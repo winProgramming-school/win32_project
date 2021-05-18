@@ -9,6 +9,7 @@
 */
 
 #include "stdafx.h"
+#include "Client.h"
 #include "GameFramework.h"
 
 #define MAX_LOADSTRING 100
@@ -46,7 +47,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	// 전역 문자열을 초기화합니다.
 	LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-	LoadStringW(hInstance, IDC_CLIENT, szWindowClass, MAX_LOADSTRING);
+	LoadStringW(hInstance, IDS_APP_TITLE, szWindowClass, MAX_LOADSTRING);
 	MyRegisterClass(hInstance);
 
 	// 응용 프로그램 초기화를 수행합니다:
@@ -55,7 +56,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		return FALSE;
 	}
 
-	HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CLIENT));
+	//HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CLIENT));
 
 	MSG msg;
 
@@ -64,11 +65,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 			if (msg.message == WM_QUIT) break;
-			if (!::TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-			{
-				::TranslateMessage(&msg);
-				::DispatchMessage(&msg);
-			}
+			::TranslateMessage(&msg);
+			::DispatchMessage(&msg);
 		}
 	}
 
