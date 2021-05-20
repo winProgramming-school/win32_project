@@ -3,6 +3,8 @@
 class WGameFramework
 {
 public:
+	scene* curScene;
+public:
 	WGameFramework();
 	~WGameFramework();
 
