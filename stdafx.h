@@ -19,13 +19,19 @@
 #include <memory.h>
 #include <tchar.h>
 #include <iostream>
+#include <chrono>
 
 #include "Define.h"
-#include "GameFramework.h"
 
-using namespace std;
 
 #include "scene.h"
 #include "menuScene.h"
+
+
+#include "GameFramework.h"
+
+using namespace std;
+using namespace std::chrono;
+
 
 // 여기서 프로그램에 필요한 추가 헤더를 참조합니다.

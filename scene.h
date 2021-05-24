@@ -5,6 +5,8 @@ enum GAME_STATUS{RUN, PAUSE, GAMEOVER};
 
 class scene {
 public:
+	GAME_STATUS status;
+public:
 	virtual ~scene();
 	
 	virtual void init() = 0;

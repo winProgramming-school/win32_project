@@ -51,6 +51,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	MSG msg;
 
+	gGameFramework.prevFrameTime = gGameFramework.curFrameTime = high_resolution_clock::now();
+
 	while (true)
 	{
 		if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -163,7 +165,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_TIMER:
 	{
-		gGameFramework.OnUpdate();
+		gGameFramework.curFrameTime = high_resolution_clock::now();
+		gGameFramework.OnUpdate(gGameFramework.GetTick());
+		gGameFramework.prevFrameTime = gGameFramework.curFrameTime;
 		InvalidateRgn(hWnd, NULL, false);
 	}
 	break;

@@ -4,17 +4,23 @@ class WGameFramework
 {
 public:
 	scene* curScene;
+
+	high_resolution_clock::time_point prevFrameTime;
+	high_resolution_clock::time_point curFrameTime;
+
 public:
 	WGameFramework();
 	~WGameFramework();
 
-	virtual void Reset();
-	virtual void Clear();
+	void Reset();
+	void Clear();
 
-	virtual void Create(HWND hWnd);
-	virtual void OnDraw(HDC hdc);
-	virtual void OnUpdate(const float frameTime = 0.17f);
-	virtual void KeyBoard(UINT iMessage, WPARAM wParam, LPARAM lParam);
+	void Create(HWND hWnd);
+	void OnDraw(HDC hdc);
+	void OnUpdate(const float frameTime = 0.17f);
+	void KeyBoard(UINT iMessage, WPARAM wParam, LPARAM lParam);
+
+	float GetTick();
 
 private:
 	HWND	m_hWnd;

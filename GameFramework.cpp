@@ -10,6 +10,7 @@ WGameFramework::WGameFramework()
 
 WGameFramework::~WGameFramework()
 {
+
 }
 
 void WGameFramework::Reset()
@@ -57,4 +58,9 @@ void WGameFramework::KeyBoard(UINT iMessage, WPARAM wParam, LPARAM lParam)
 	}
 	}
 	curScene->processKey(iMessage, wParam, lParam);	//현재 씬의 프로세스키
+}
+
+float WGameFramework::GetTick()
+{
+	return duration_cast<milliseconds>(curFrameTime - prevFrameTime).count();
 }
