@@ -29,7 +29,6 @@ using namespace std::chrono;
 
 #include "Define.h"
 
-
 #include "scene.h"
 #include "menuScene.h"
 #include "gameScene.h"

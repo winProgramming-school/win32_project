@@ -158,7 +158,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		memdc = CreateCompatibleDC(mainHDC);
 		SelectObject(memdc, hBitmap);
 
-		framework.OnDraw(memdc);			//draw를 안해요 검은바탕화면만 나와요
+		framework.OnDraw(memdc);			
 
 		BitBlt(mainHDC, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, memdc, 0, 0, SRCCOPY);
 		DeleteObject(hBitmap);

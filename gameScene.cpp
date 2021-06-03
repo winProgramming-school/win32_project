@@ -20,11 +20,7 @@ void gameScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
     case WM_KEYDOWN:
     {
         switch (wParam) {
-        case VK_RETURN: //enter 키누르면 게임시작
-            scene* scene = framework.curScene;
-            //framework.curScene = new gameScene;
-            framework.curScene->init();
-            delete scene;
+        case VK_RETURN: 
             break;
         }
     }
@@ -40,7 +36,7 @@ void gameScene::Update()
 //메뉴에서 그려줄 리소스들 그리기
 void gameScene::Render(HDC hdc)
 {
-    
+    PatBlt(hdc, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, BLACKNESS);
 }
 
 //void menuScene::Release() {

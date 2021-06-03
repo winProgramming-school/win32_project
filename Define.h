@@ -3,8 +3,10 @@
 #define MAIN_TIMER			1	
 #define MAIN_TIEMR_FRAME	17 // 60FPS
 
-#define FRAME_WIDTH			1280
+#define FRAME_WIDTH			800
 #define FRAME_HEIGHT		720
+#define MEM_WIDTH			800
+#define MEM_HEIGHT			1500
 
 // KeyBoard
 enum VK_KEY

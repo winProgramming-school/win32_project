@@ -20,7 +20,7 @@ void menuScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 	case WM_KEYDOWN:
 	{
 		switch (wParam) {
-		case VK_S:
+		case VK_RETURN:
 			scene* scene = framework.curScene;	////ÇöÀç ¾ÀÀ» tmp¿¡ ³Ö°í Áö¿öÁÜ
 			framework.curScene = new gameScene;
 			framework.curScene->init();
