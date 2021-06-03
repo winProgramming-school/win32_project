@@ -9,7 +9,7 @@
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
-static WGameFramework gGameFramework;
+//static WGameFramework gGameFramework;
 extern WGameFramework framework;
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -51,7 +51,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	MSG msg;
 
-	gGameFramework.prevFrameTime = gGameFramework.curFrameTime = high_resolution_clock::now();
+	//gGameFramework.prevFrameTime = gGameFramework.curFrameTime = high_resolution_clock::now();
 
 	while (true)
 	{
@@ -63,7 +63,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		}
 	}
 
-	gGameFramework.Clear();
+	framework.Clear();
 
 	return (int)msg.wParam;
 }
@@ -146,7 +146,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_CREATE:
 	{
-		gGameFramework.Create(hWnd);
+		framework.Create(hWnd);
 		SetTimer(hWnd, MAIN_TIMER, MAIN_TIEMR_FRAME, NULL);
 	}
 	break;
@@ -158,7 +158,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		memdc = CreateCompatibleDC(mainHDC);
 		SelectObject(memdc, hBitmap);
 
-		gGameFramework.OnDraw(memdc);			//draw를 안해요 검은바탕화면만 나와요
+		framework.OnDraw(memdc);			//draw를 안해요 검은바탕화면만 나와요
 
 		BitBlt(mainHDC, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, memdc, 0, 0, SRCCOPY);
 		DeleteObject(hBitmap);
@@ -169,9 +169,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_TIMER:
 	{
-		gGameFramework.curFrameTime = high_resolution_clock::now();
-		gGameFramework.OnUpdate(gGameFramework.GetTick());
-		gGameFramework.prevFrameTime = gGameFramework.curFrameTime;
+		framework.curFrameTime = high_resolution_clock::now();
+		framework.OnUpdate(framework.GetTick());
+		framework.prevFrameTime = framework.curFrameTime;
 		InvalidateRgn(hWnd, NULL, false);
 	}
 	break;
@@ -180,7 +180,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_KEYDOWN:
 	case WM_KEYUP:
 	{
-		gGameFramework.KeyBoard(message, wParam, lParam);
+		framework.KeyBoard(message, wParam, lParam);
 	}
 	break;
 

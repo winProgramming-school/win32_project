@@ -11,7 +11,7 @@ menuScene::~menuScene()
 void menuScene::init()
 {
 	//메뉴 화면에서 그릴 리소스 위치 초기화
-	background.Load(TEXT("배경화면1.png"));
+	background.Load(TEXT("시작화면.png"));
 }
 void menuScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam) 
 {
@@ -21,11 +21,10 @@ void menuScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 	{
 		switch (wParam) {
 		case VK_S:
-			//scene* scene = framework.curScene;	////현재 씬을 tmp에 넣고 지워줌
-			//S 누르면 start => 게임화면으로
-			//framework.curScene = new gameScene;
-			//framework.curScene->init();
-			//delete scene;
+			scene* scene = framework.curScene;	////현재 씬을 tmp에 넣고 지워줌
+			framework.curScene = new gameScene;
+			framework.curScene->init();
+			delete scene;
 			break;
 		}
 	}

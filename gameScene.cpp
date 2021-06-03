@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "gameScene.h"
 //memdc에 그려주는 역할, frame
-WGameFramework framework;
+extern WGameFramework framework;
 
 gameScene::~gameScene()
 {
