@@ -3,7 +3,7 @@
 
 class gameScene : public scene {
 public:
-
+	RECT animation[10];
 public:
 	virtual ~gameScene() override;
 

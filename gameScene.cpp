@@ -11,7 +11,6 @@ gameScene::~gameScene()
 void gameScene::init()
 {
 
-
 }
 void gameScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
@@ -36,7 +35,7 @@ void gameScene::Update()
 //메뉴에서 그려줄 리소스들 그리기
 void gameScene::Render(HDC hdc)
 {
-    PatBlt(hdc, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, BLACKNESS);
+    //PatBlt(hdc, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, BLACKNESS);
 }
 
 //void menuScene::Release() {
