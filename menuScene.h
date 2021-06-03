@@ -2,7 +2,8 @@
 #include "scene.h"
 
 class menuScene : public scene {
-
+public:
+	CImage background;
 public:
 	virtual ~menuScene() override;
 

@@ -5,11 +5,13 @@ WGameFramework framework;
 
 menuScene::~menuScene()
 {
+
 }
 
 void menuScene::init()
 {
 	//메뉴 화면에서 그릴 리소스 위치 초기화
+	background.Load(TEXT("배경화면1.png"));
 }
 void menuScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam) 
 {
@@ -34,7 +36,8 @@ void menuScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 
 void menuScene::Render(HDC hdc) 
 {
-	//메뉴에서 그려줄 리소스들 그리기
+	background.Draw(hdc, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, 0, 0, background.GetWidth(), background.GetHeight());
+	//--- 메모리 DC에 배경 그리기
 }
 void menuScene::Update()
 {

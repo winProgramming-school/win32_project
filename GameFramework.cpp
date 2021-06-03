@@ -1,4 +1,3 @@
-
 #include "stdafx.h"
 #include "GameFramework.h"
 
@@ -27,15 +26,15 @@ void WGameFramework::Create(HWND hWnd)
 {
 	m_hWnd = hWnd;
 	curScene = new menuScene;	//처음에는 게임 시작 화면으로
+	curScene->init();
 }
 
 void WGameFramework::OnDraw(HDC hdc)
 {
-	static int x = 10;
-	x++;
-	Rectangle(hdc, x + 10, 10, x + 100, 100);
-	//여기서 현재 씬 그려주기
-	//curScene->Render(hdc);
+	curScene->Render(hdc);
+	//static int x = 10;
+	//x++;
+	//Rectangle(hdc, x + 10, 10, x + 100, 100);
 }
 
 void WGameFramework::OnUpdate(const float frameTime)

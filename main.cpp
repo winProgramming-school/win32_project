@@ -137,6 +137,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	PAINTSTRUCT ps;
+	HBITMAP hBitmap;
+	HDC mainHDC;
+	HDC memdc;
+
 	switch (message)
 	{
 	case WM_CREATE:
@@ -148,17 +153,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_PAINT:
 	{
-		PAINTSTRUCT ps;
-		HDC mainHDC = BeginPaint(hWnd, &ps);
-		HBITMAP GLay = CreateCompatibleBitmap(mainHDC, FRAME_WIDTH, FRAME_HEIGHT);
-		HDC GLayDC = CreateCompatibleDC(mainHDC);
-		SelectObject(GLayDC, GLay);
+		mainHDC = BeginPaint(hWnd, &ps);
+		hBitmap = CreateCompatibleBitmap(mainHDC, FRAME_WIDTH, FRAME_HEIGHT);
+		memdc = CreateCompatibleDC(mainHDC);
+		SelectObject(memdc, hBitmap);
 
-		gGameFramework.OnDraw(GLayDC);
+		gGameFramework.OnDraw(memdc);			//draw를 안해요 검은바탕화면만 나와요
 
-		BitBlt(mainHDC, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, GLayDC, 0, 0, SRCCOPY);
-		DeleteDC(GLayDC);
-		DeleteObject(GLay);
+		BitBlt(mainHDC, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, memdc, 0, 0, SRCCOPY);
+		DeleteObject(hBitmap);
+		DeleteDC(memdc);
 		EndPaint(hWnd, &ps);
 	}
 	break;
