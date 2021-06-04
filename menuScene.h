@@ -19,7 +19,7 @@ public:
 
 	virtual void processKey(UINT iMessage, WPARAM wParam, LPARAM lParam) override;
 
-	virtual void Update() override;
+	virtual void Update(const float frameTime) override;
 
 	virtual void Render(HDC hdc) override;
 };

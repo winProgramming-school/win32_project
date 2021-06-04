@@ -1,10 +1,12 @@
 #pragma once
 
+enum SCENE{MENU, GAME};
+
 class WGameFramework
 {
 public:
 	scene* curScene;
-
+	SCENE nowscene;
 	high_resolution_clock::time_point prevFrameTime;
 	high_resolution_clock::time_point curFrameTime;
 

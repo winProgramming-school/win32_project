@@ -7,7 +7,11 @@
 #define FRAME_HEIGHT		720
 #define MEM_WIDTH			800
 #define MEM_HEIGHT			1500
+
 #define PLAYER_IMAGE_SIZE	180
+
+#define CLOUD_WIDTH			172
+#define CLOUD_HEIGHT		80
 
 // KeyBoard
 enum VK_KEY

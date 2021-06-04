@@ -43,7 +43,7 @@ void menuScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 	}
 }
 
-void menuScene::Update()
+void menuScene::Update(const float frameTime)
 {
 	ren++;
 	if (ren >= 10)
@@ -77,7 +77,7 @@ void menuScene::Render(HDC hdc)
 	background.Draw(hdc, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, 0, 0, background.GetWidth(), background.GetHeight());
 	
 	nomalCloud.Draw(hdc, 60, 400, cloudSize, cloudSize, 512 * ren, 0, nomalCloud.GetHeight(), nomalCloud.GetHeight());
-	//press.Draw(hdc, 300, 200, 700, 70, 0, 0, press.GetHeight(), press.GetHeight());
+	press.Draw(hdc, 300, 200, 700, 70, 0, 0, press.GetHeight(), press.GetHeight());
 	rainCloud.Draw(hdc, 900, 300, rainCloudSize, rainCloudSize, 512 * ren, 0, rainCloud.GetHeight(), rainCloud.GetHeight());
 	darkCloud.Draw(hdc, 500, 0, darkCloudSize, darkCloudSize, 512 * ren, 0, darkCloud.GetHeight(), darkCloud.GetHeight());
 	//--- 메모리 DC에 배경 그리기

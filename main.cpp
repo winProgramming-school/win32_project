@@ -154,7 +154,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_PAINT:
 	{
 		mainHDC = BeginPaint(hWnd, &ps);
-		hBitmap = CreateCompatibleBitmap(mainHDC, FRAME_WIDTH, FRAME_HEIGHT);
+		if(framework.nowscene == MENU)
+			hBitmap = CreateCompatibleBitmap(mainHDC, FRAME_WIDTH, FRAME_HEIGHT);
+		else
+			hBitmap = CreateCompatibleBitmap(mainHDC, MEM_WIDTH, MEM_HEIGHT);		//gamescene일땐 memdc가 길어야 함
+
 		memdc = CreateCompatibleDC(mainHDC);
 		SelectObject(memdc, hBitmap);
 
