@@ -31,7 +31,8 @@ void menuScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 	{
 		switch (wParam) {
 		case VK_RETURN:
-			scene* scene = framework.curScene;	////ÇöÀç ¾ÀÀ» tmp¿¡ ³Ö°í Áö¿öÁÜ
+			scene* scene = framework.curScene;	//ÇöÀç ¾ÀÀ» tmp¿¡ ³Ö°í Áö¿öÁÜ
+			framework.nowscene = GAME;
 			framework.curScene = new gameScene;
 			framework.curScene->init();
 			delete scene;

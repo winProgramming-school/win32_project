@@ -12,6 +12,7 @@
 // Windows 헤더 파일
 #include <windows.h>
 #include <atlimage.h>
+#include <mmsystem.h>
 
 // C 런타임 헤더 파일입니다.
 #include <stdlib.h>

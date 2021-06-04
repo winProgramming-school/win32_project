@@ -7,18 +7,6 @@ gameScene::~gameScene()
 {
 
 }
-
-void gameScene::drawPlayer(HDC hdc) {
-    //플레이어 그리는 함수(없어도 되지만 정리가 깔끔해서..)
-    player_image.Draw(hdc, player.px, player.py, CLOUD_WIDTH / 2, CLOUD_HEIGHT, animation[ani_index].left, animation[ani_index].top,
-        PLAYER_IMAGE_SIZE, PLAYER_IMAGE_SIZE);
-}
-
-void gameScene::drawBackGround(HDC hdc) {
-    //배경 그리는 함수
-
-}
-
 void gameScene::init()
 {
     ani_index = 0;      //충돌이면 10~13, 평상시면 0~9
@@ -30,6 +18,18 @@ void gameScene::init()
     player_image.Load(TEXT("image/벌.jpg"));
     background.Load(TEXT("image/배경화면1.png"));
 }
+
+void gameScene::drawPlayer(HDC hdc) {
+    //플레이어 그리는 함수(없어도 되지만 정리가 깔끔해서..)
+    player_image.Draw(hdc, player.px, player.py, CLOUD_WIDTH / 2, CLOUD_HEIGHT, animation[ani_index].left, animation[ani_index].top,
+        PLAYER_IMAGE_SIZE, PLAYER_IMAGE_SIZE);
+}
+
+void gameScene::drawBackGround(HDC hdc) {
+    //배경 그리는 함수
+    background.Draw(hdc, 0, 0, MEM_WIDTH, MEM_HEIGHT, 0, 0, background.GetWidth(), background.GetHeight());
+}
+
 void gameScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
     switch (iMessage)
@@ -55,6 +55,7 @@ void gameScene::Update(const float frameTime)
 
 void gameScene::Render(HDC hdc)
 {
+    drawBackGround(hdc);
     drawPlayer(hdc);
 }
 

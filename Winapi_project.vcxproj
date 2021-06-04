@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GameFramework.cpp" />
+    <ClCompile Include="gameScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menuScene.cpp" />
     <ClCompile Include="scene.cpp" />
@@ -149,6 +150,7 @@
     <ClInclude Include="Client.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="GameFramework.h" />
+    <ClInclude Include="gameScene.h" />
     <ClInclude Include="menuScene.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="scene.h" />

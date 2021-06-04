@@ -162,9 +162,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		memdc = CreateCompatibleDC(mainHDC);
 		SelectObject(memdc, hBitmap);
 
-		framework.OnDraw(memdc);			
+		framework.OnDraw(memdc);
 
-		BitBlt(mainHDC, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, memdc, 0, 0, SRCCOPY);
+		if (framework.nowscene == MENU)
+			BitBlt(mainHDC, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, memdc, 0, 0, SRCCOPY);
+		else
+			StretchBlt(mainHDC, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, memdc, framework.curScene->startX, framework.curScene->startY, FRAME_WIDTH, FRAME_HEIGHT, SRCCOPY);
 		DeleteObject(hBitmap);
 		DeleteDC(memdc);
 		EndPaint(hWnd, &ps);
