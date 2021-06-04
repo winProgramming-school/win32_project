@@ -4,6 +4,14 @@
 class menuScene : public scene {
 public:
 	CImage background;
+	CImage nomalCloud, rainCloud, darkCloud, cloud;
+	CImage press;
+	int cloudSizeCount;
+	int cloudSize;
+	int rainCloudSize;
+	int darkCloudSize;
+	int pressText;
+	int ren; //애니메이션을 위한 변수
 public:
 	virtual ~menuScene() override;
 
