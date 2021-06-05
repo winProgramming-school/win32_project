@@ -12,9 +12,12 @@ typedef struct Cloud {
 
 class gameScene : public scene {
 public:
-	RECT animation[14];	//평상시 애니메이션(리소스 위치)
-	int ani_index;
+	RECT animation[28];	//평상시 애니메이션(리소스 위치)
+	int ani_index;		//애니메이션 index
+	int cloud_index;	//구름 개수
+
 	CImage player_image, background;
+	CImage normalCloud, rainCloud, darkCloud;
 
 	Player player;
 	Cloud cloud[200];
@@ -32,5 +35,8 @@ public:
 
 	void drawPlayer(HDC hdc);
 	void drawBackGround(HDC hdc);
-	
+	void drawCloud(HDC hdc);
+
+	void InitCloud();
+
 };

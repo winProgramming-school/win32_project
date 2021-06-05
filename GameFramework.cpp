@@ -9,7 +9,7 @@ WGameFramework::WGameFramework()
 
 WGameFramework::~WGameFramework()
 {
-	Clear();
+
 }
 
 void WGameFramework::Reset()

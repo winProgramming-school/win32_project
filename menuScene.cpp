@@ -12,11 +12,11 @@ void menuScene::init()
 {
     //메뉴 화면에서 그릴 리소스 위치 초기화
     background.Load(TEXT("image/시작화면1.png"));
-    nomalCloud.Load(TEXT("image/일반구름.png"));
+    normalCloud.Load(TEXT("image/일반구름.png"));
     rainCloud.Load(TEXT("image/비구름.png"));
     darkCloud.Load(TEXT("image/먹구름.png"));
     press.Load(TEXT("image/시작하려면누르세요.png"));
-    PlaySound(TEXT("sound/level1-step1.wav"), NULL, SND_ASYNC | SND_LOOP);
+    //PlaySound(TEXT("sound/level1-step1.wav"), NULL, SND_ASYNC | SND_LOOP);
     cloudSizeCount = 0;
     cloudSize = 300;
     rainCloudSize = 220;
@@ -32,10 +32,11 @@ void menuScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
     {
         switch (wParam) {
         case VK_RETURN:
-            PlaySound(NULL, NULL, NULL);
+            //PlaySound(NULL, NULL, NULL);
             scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
             framework.curScene = new gameScene;
             framework.curScene->init();
+            framework.nowscene = GAME;
             delete scene;
             break;
         }
@@ -77,7 +78,7 @@ void menuScene::Update(const float frameTime)
 void menuScene::Render(HDC hdc)
 {
     background.Draw(hdc, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, 0, 0, background.GetWidth(), background.GetHeight());
-    nomalCloud.Draw(hdc, 60, 400, cloudSize, cloudSize, 512 * ren, 0, nomalCloud.GetHeight(), nomalCloud.GetHeight());
+    normalCloud.Draw(hdc, 60, 400, cloudSize, cloudSize, 512 * ren, 0, normalCloud.GetHeight(), normalCloud.GetHeight());
     press.Draw(hdc, 390, 550, 430, 45, 0, 0, press.GetWidth(), press.GetHeight());
     rainCloud.Draw(hdc, 900, 300, rainCloudSize, rainCloudSize, 512 * ren, 0, rainCloud.GetHeight(), rainCloud.GetHeight());
     darkCloud.Draw(hdc, 500, 0, darkCloudSize, darkCloudSize, 512 * ren, 0, darkCloud.GetHeight(), darkCloud.GetHeight());

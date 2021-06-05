@@ -4,7 +4,7 @@
 class menuScene : public scene {
 public:
 	CImage background;
-	CImage nomalCloud, rainCloud, darkCloud, cloud;
+	CImage normalCloud, rainCloud, darkCloud, cloud;
 	CImage press;
 	int cloudSizeCount;
 	int cloudSize;

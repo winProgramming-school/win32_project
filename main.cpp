@@ -140,7 +140,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	PAINTSTRUCT ps;
 	HBITMAP hBitmap;
 	HDC mainHDC;
-	HDC memdc;
+	HDC memdc;		//menuDC
+	HDC gamedc;
 
 	switch (message)
 	{
@@ -154,22 +155,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_PAINT:
 	{
 		mainHDC = BeginPaint(hWnd, &ps);
-		if(framework.nowscene == MENU)
+		if (framework.nowscene == MENU) {
 			hBitmap = CreateCompatibleBitmap(mainHDC, FRAME_WIDTH, FRAME_HEIGHT);
-		else
-			hBitmap = CreateCompatibleBitmap(mainHDC, MEM_WIDTH, MEM_HEIGHT);		//gamescene일땐 memdc가 길어야 함
-
-		memdc = CreateCompatibleDC(mainHDC);
-		SelectObject(memdc, hBitmap);
-
-		framework.OnDraw(memdc);
-
-		if (framework.nowscene == MENU)
+			memdc = CreateCompatibleDC(mainHDC);
+			SelectObject(memdc, hBitmap);
+			framework.OnDraw(memdc);
 			BitBlt(mainHDC, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, memdc, 0, 0, SRCCOPY);
-		else
-			StretchBlt(mainHDC, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, memdc, framework.curScene->startX, framework.curScene->startY, FRAME_WIDTH, FRAME_HEIGHT, SRCCOPY);
+			DeleteDC(memdc);
+		}
+		else {
+			hBitmap = CreateCompatibleBitmap(mainHDC, MEM_WIDTH, MEM_HEIGHT);		//gamescene일땐 memdc가 길어야 함
+			gamedc = CreateCompatibleDC(mainHDC);
+			SelectObject(gamedc, hBitmap);
+			framework.OnDraw(gamedc);
+			StretchBlt(mainHDC, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, gamedc, framework.curScene->startX, framework.curScene->startY, FRAME_WIDTH, FRAME_HEIGHT, SRCCOPY);
+			DeleteDC(gamedc);
+		}
+
 		DeleteObject(hBitmap);
-		DeleteDC(memdc);
 		EndPaint(hWnd, &ps);
 	}
 	break;
