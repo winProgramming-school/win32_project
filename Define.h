@@ -1,7 +1,7 @@
 #pragma once
 
 #define MAIN_TIMER			1	
-#define MAIN_TIEMR_FRAME	17 // 60FPS
+#define MAIN_TIEMR_FRAME	30 // 60FPS
 
 #define FRAME_WIDTH			1200
 #define FRAME_HEIGHT		720
@@ -9,10 +9,13 @@
 #define MEM_HEIGHT			1500
 
 #define PLAYER_IMAGE_SIZE	180
+#define CLOUD_IMAGE_SIZE	512
 
 #define CLOUD_WIDTH			172
-#define CLOUD_HEIGHT		80
+#define CLOUD_HEIGHT		130
 
+#define PLAYER_WIDTH		CLOUD_WIDTH / 2
+#define PLAYER_HEIGHT		CLOUD_HEIGHT - 50
 // KeyBoard
 enum VK_KEY
 {

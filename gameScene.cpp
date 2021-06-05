@@ -9,7 +9,7 @@ gameScene::~gameScene()
 }
 void gameScene::InitCloud() {       //txt파일에서 구름 정보 받아오는 함수
     FILE* fp;
-    fopen_s(&fp, "map1.txt", "r");
+    fopen_s(&fp, "image/map1.txt", "r");
 
     int i = 0;
     if (fp == NULL)//열기 실패일 때
@@ -25,18 +25,27 @@ void gameScene::InitCloud() {       //txt파일에서 구름 정보 받아오는 함수
     cloud_index = i;
     fclose(fp);
 }
-
-void gameScene::init()
-{
-    ani_index = 0;      //충돌이면 20~27, 평상시면 0~19
-    startX = 0, startY = 0;
+void gameScene::InitAnimation() {
     int j = 0;
-
     for (int i = 0; i < 14; i++) {
         animation[j] = { i * PLAYER_IMAGE_SIZE, 0, (i + 1) * PLAYER_IMAGE_SIZE, PLAYER_IMAGE_SIZE };
-        animation[j+1] = { i * PLAYER_IMAGE_SIZE, 0, (i + 1) * PLAYER_IMAGE_SIZE, PLAYER_IMAGE_SIZE };
+        animation[j + 1] = { i * PLAYER_IMAGE_SIZE, 0, (i + 1) * PLAYER_IMAGE_SIZE, PLAYER_IMAGE_SIZE };
         j += 2;
     }
+    j = 0;
+    for (int i = 0; i < 10; i++) {
+        cloud_ani[j] = { i * CLOUD_IMAGE_SIZE, 0, (i + 1) * CLOUD_IMAGE_SIZE, CLOUD_IMAGE_SIZE };
+        cloud_ani[j + 1] = { i * CLOUD_IMAGE_SIZE, 0, (i + 1) * CLOUD_IMAGE_SIZE, CLOUD_IMAGE_SIZE };
+        cloud_ani[j + 2] = { i * CLOUD_IMAGE_SIZE, 0, (i + 1) * CLOUD_IMAGE_SIZE, CLOUD_IMAGE_SIZE };
+        cloud_ani[j + 3] = { i * CLOUD_IMAGE_SIZE, 0, (i + 1) * CLOUD_IMAGE_SIZE, CLOUD_IMAGE_SIZE };
+        cloud_ani[j + 4] = { i * CLOUD_IMAGE_SIZE, 0, (i + 1) * CLOUD_IMAGE_SIZE, CLOUD_IMAGE_SIZE };
+        j += 5;
+    }
+
+}
+void gameScene::init()
+{
+    startX = 0, startY = MEM_HEIGHT - FRAME_HEIGHT;
 
     player_image.Load(TEXT("image/꼬물.png"));
     background.Load(TEXT("image/배경화면1.png"));
@@ -44,32 +53,37 @@ void gameScene::init()
     rainCloud.Load(TEXT("image/비구름.png"));
     darkCloud.Load(TEXT("image/먹구름.png"));
 
+    InitAnimation();
     InitCloud();
-    player = { 50, 50, 1 };
+    ani_index = 0;      //충돌이면 20~27, 평상시면 0~19
+    cloud_aniindex = 0;
+
+    player = { MEM_WIDTH/2, MEM_HEIGHT- CLOUD_HEIGHT-50, 1 };
 }
 
 void gameScene::drawPlayer(HDC hdc) {
-    //플레이어 그리는 함수(없어도 되지만 정리가 깔끔해서..)
-    player_image.Draw(hdc, player.px, player.py, CLOUD_WIDTH / 2, CLOUD_HEIGHT, animation[ani_index].left, animation[ani_index].top,
+    //플레이어 그리는 함수
+    player_image.Draw(hdc, player.px, player.py, PLAYER_WIDTH, PLAYER_HEIGHT, animation[ani_index].left, animation[ani_index].top,
         PLAYER_IMAGE_SIZE, PLAYER_IMAGE_SIZE);
 }
 
 void gameScene::drawBackGround(HDC hdc) {
     //배경 그리는 함수
-    background.Draw(hdc, 0, 0, MEM_WIDTH, MEM_HEIGHT, 0, 0, background.GetWidth(), background.GetHeight());
+    background.BitBlt(hdc, 0, 0, SRCCOPY);
 }
+
 void gameScene::drawCloud(HDC hdc) {
     //구름 그리는 함수
     for (int j = 0; j < cloud_index; ++j) {
         switch (cloud[j].what) {
         case 1:
-            darkCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT, 0, 0, darkCloud.GetWidth(), darkCloud.GetHeight());
+            darkCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT, cloud_ani[cloud_aniindex].left, cloud_ani[cloud_aniindex].top, CLOUD_IMAGE_SIZE, CLOUD_IMAGE_SIZE);
             break;
         case 2:
-            rainCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT, 0, 0, rainCloud.GetWidth(), rainCloud.GetHeight());
+            rainCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT, cloud_ani[cloud_aniindex].left, cloud_ani[cloud_aniindex].top, CLOUD_IMAGE_SIZE, CLOUD_IMAGE_SIZE);
             break;
         case 3:
-            normalCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT, 0, 0, normalCloud.GetWidth(), normalCloud.GetHeight());
+            normalCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT, cloud_ani[cloud_aniindex].left, cloud_ani[cloud_aniindex].top, CLOUD_IMAGE_SIZE, CLOUD_IMAGE_SIZE);
             break;
         }
     }
@@ -94,8 +108,12 @@ void gameScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 void gameScene::Update(const float frameTime)
 {
     ani_index++;
+    cloud_aniindex++;
     if (ani_index == 20)
         ani_index = 0;
+
+    if (cloud_aniindex == 50)
+        cloud_aniindex = 0;
 }
 
 void gameScene::Render(HDC hdc)
