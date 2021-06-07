@@ -1,11 +1,11 @@
 #pragma once
 
 #define MAIN_TIMER			1	
-<<<<<<< HEAD
+
 #define MAIN_TIEMR_FRAME	60 // 60FPS
-=======
+
 #define MAIN_TIEMR_FRAME	17 // 60FPS
->>>>>>> dd8bdc24beb46d7f54ee3d8c579a48ea901e8a0d
+
 
 #define FRAME_WIDTH			1200
 #define FRAME_HEIGHT		720
