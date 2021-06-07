@@ -19,7 +19,7 @@
 
 #define PLAYERMOVE_STOP		MEM_HEIGHT - (FRAME_HEIGHT/2)		//처음 시작할 때 플레이어가 화면의 높이 반 이상 올라가면 화면 움직임
 #define PLAYERMOVE_START	FRAME_HEIGHT/2						//나중에 클리어 지점에 가까이 도달했을 때는 화면 멈추고 플레이어만 움직임
-#define PLAYER_FIRSTY		MEM_HEIGHT- CLOUD_HEIGHT			//플레이어 처음 시작 y지점
+#define PLAYER_FIRSTY		MEM_HEIGHT- (CLOUD_HEIGHT + 50)		//플레이어 처음 시작 y지점
 
 // KeyBoard
 enum VK_KEY

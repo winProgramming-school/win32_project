@@ -128,11 +128,11 @@ void gameScene::Update(const float frameTime)
     if (cloud_aniindex == 50)
         cloud_aniindex = 0;
 
-    if (player.py >= PLAYERMOVE_START || player.py <= PLAYERMOVE_STOP)
-        player.py += 0.05 * frameTime;
-    else {
-        startY += 0.05 * frameTime;
-        player.py += 0.05 * frameTime;
+    if (player.py <= PLAYER_FIRSTY && (player.py <= PLAYERMOVE_START || player.py >= PLAYERMOVE_STOP))
+        player.py += 0.08 * frameTime;
+    else if (player.py >= PLAYERMOVE_START && player.py <= PLAYERMOVE_STOP){
+        startY += 0.08 * frameTime;
+        player.py += 0.08 * frameTime;
     }
 }
 
