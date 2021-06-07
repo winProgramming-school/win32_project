@@ -47,7 +47,7 @@ void gameScene::init()
 {
     startX = 0, startY = MEM_HEIGHT - FRAME_HEIGHT;
 
-    player_image.Load(TEXT("image/꼬물.png"));
+    player_image.Load(TEXT("image/꼬물이.png"));
     background.Load(TEXT("image/배경화면1.png"));
     normalCloud.Load(TEXT("image/일반구름.png"));
     rainCloud.Load(TEXT("image/비구름.png"));

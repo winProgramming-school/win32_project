@@ -120,6 +120,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalOptions>winmm.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -144,6 +145,7 @@
     <ClCompile Include="gameScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menuScene.cpp" />
+    <ClCompile Include="overScene.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
@@ -153,6 +155,7 @@
     <ClInclude Include="GameFramework.h" />
     <ClInclude Include="gameScene.h" />
     <ClInclude Include="menuScene.h" />
+    <ClInclude Include="overScene.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="stdafx.h" />
