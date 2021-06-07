@@ -8,6 +8,7 @@ class scene {
 public:
 	GAME_STATUS status;
 	int startX, startY;
+
 public:
 	virtual ~scene();
 	

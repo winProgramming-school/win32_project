@@ -7,8 +7,8 @@ class WGameFramework
 public:
 	scene* curScene;
 	SCENE nowscene;
-	high_resolution_clock::time_point prevFrameTime;
-	high_resolution_clock::time_point curFrameTime;
+	clock_t prevFrameTime;
+	clock_t curFrameTime;
 
 public:
 	WGameFramework();

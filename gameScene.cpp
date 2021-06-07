@@ -33,6 +33,11 @@ void gameScene::InitAnimation() {
         j += 2;
     }
     j = 0;
+
+    //0~4, 5~9, 10~14, 15~19, 20~24, 25~29, 30~34, 35~39, 40~44, 45~49 까지 같은 이미지라 보면 됨
+    //20~24, 25~29, 30~34, 35~39 이때 비나 번개치는 애니메이션
+    //업데이트 속도가 너무 빨라서 느리게 움직이게 하기 위함
+
     for (int i = 0; i < 10; i++) {
         cloud_ani[j] = { i * CLOUD_IMAGE_SIZE, 0, (i + 1) * CLOUD_IMAGE_SIZE, CLOUD_IMAGE_SIZE };
         cloud_ani[j + 1] = { i * CLOUD_IMAGE_SIZE, 0, (i + 1) * CLOUD_IMAGE_SIZE, CLOUD_IMAGE_SIZE };
@@ -41,13 +46,13 @@ void gameScene::InitAnimation() {
         cloud_ani[j + 4] = { i * CLOUD_IMAGE_SIZE, 0, (i + 1) * CLOUD_IMAGE_SIZE, CLOUD_IMAGE_SIZE };
         j += 5;
     }
-
 }
+
 void gameScene::init()
 {
-    startX = 0, startY = MEM_HEIGHT - FRAME_HEIGHT;
+    startX = 0, startY = MEM_HEIGHT - (FRAME_HEIGHT);
 
-    player_image.Load(TEXT("image/꼬물.png"));
+    player_image.Load(TEXT("image/꼬물이.png"));
     background.Load(TEXT("image/배경화면1.png"));
     normalCloud.Load(TEXT("image/일반구름.png"));
     rainCloud.Load(TEXT("image/비구름.png"));
@@ -58,7 +63,7 @@ void gameScene::init()
     ani_index = 0;      //충돌이면 20~27, 평상시면 0~19
     cloud_aniindex = 0;
 
-    player = { MEM_WIDTH/2, MEM_HEIGHT- CLOUD_HEIGHT-50, 1 };
+    player = { MEM_WIDTH/2, PLAYER_FIRSTY, 1 };
 }
 
 void gameScene::drawPlayer(HDC hdc) {
@@ -95,10 +100,18 @@ void gameScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
     {
     case WM_KEYDOWN:
     {
-        switch (wParam) {
-        case VK_RETURN: 
-            break;
+        if ((GetAsyncKeyState(VK_UP) && 0x8000) || (GetAsyncKeyState(VK_UP) && 0x8001)) {
+            if (player.py <= PLAYERMOVE_START || player.py >= PLAYERMOVE_STOP)
+                player.py -= 5;
+            else {
+                startY -= 5;
+                player.py -= 5;
+            }
         }
+        else if ((GetAsyncKeyState(VK_RIGHT) && 0x8000) || (GetAsyncKeyState(VK_RIGHT) && 0x8001))
+            player.px += 5;
+        else if ((GetAsyncKeyState(VK_LEFT) && 0x8000) || (GetAsyncKeyState(VK_LEFT) && 0x8001))
+            player.px -= 5;
     }
     break;
     }
@@ -114,6 +127,13 @@ void gameScene::Update(const float frameTime)
 
     if (cloud_aniindex == 50)
         cloud_aniindex = 0;
+
+    if (player.py >= PLAYERMOVE_START || player.py <= PLAYERMOVE_STOP)
+        player.py += 0.05 * frameTime;
+    else {
+        startY += 0.05 * frameTime;
+        player.py += 0.05 * frameTime;
+    }
 }
 
 void gameScene::Render(HDC hdc)
