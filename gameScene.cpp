@@ -99,6 +99,13 @@ void gameScene::drawCloud(HDC hdc) {
     }
 }
 
+void gameScene::drawBox(HDC hdc) {
+    Rectangle(hdc, pRECT.left, pRECT.top, pRECT.right, pRECT.bottom);
+    for (int i = 0; i < cloud_index; ++i) {
+        Rectangle(hdc, cloud[i].cx +30, cloud[i].cy+30, cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + CLOUD_COLLIDE_HEIGHT);
+    }
+    
+}
 void gameScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
     switch (iMessage)
@@ -167,24 +174,28 @@ void gameScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 void gameScene::Update(const float frameTime)
 {
 
-    if (player.status)          //충돌이 아닐 때
+    if (player.status) {          //충돌이 아닐 때
         ani_index++;
+        if (ani_index == 20)
+            ani_index = 0;
+    }
     else
         ani_index = 20;
-    if (ani_index == 20 && player.status)
-        ani_index = 0;
 
+    pRECT = { player.px+18,player.py + 10,player.px+18 + PLAYER_COLLIDE_WIDTH ,player.py + PLAYER_HEIGHT};
 
-    pRECT = { player.px,player.py,player.px + PLAYER_WIDTH ,player.py + PLAYER_HEIGHT };
     player.status = 1;
+    ani_index = 0;
 
     for (int i = 0; i < cloud_index; ++i) {
         cloud[i].index++;
         if (cloud[i].index == 50)
             cloud[i].index = 0;
-        cRECT = { cloud[i].cx, cloud[i].cy, cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + CLOUD_COLLIDE_HEIGHT };
-        if (IntersectRect(&tmp, &cRECT, &pRECT)) {
+        cRECT = { cloud[i].cx+30, cloud[i].cy+30, cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + CLOUD_COLLIDE_HEIGHT };
+        if (IntersectRect(&tmp, &cRECT, &pRECT) && i > 6) {          //충돌 검사
             player.status = 0;
+            ani_index = 20;
+            break;
         }
     }
 
@@ -251,6 +262,7 @@ void gameScene::Update(const float frameTime)
 void gameScene::Render(HDC hdc)
 {
     drawBackGround(hdc);
+    //drawBox(hdc);
     drawPlayer(hdc);
     drawCloud(hdc);
 }

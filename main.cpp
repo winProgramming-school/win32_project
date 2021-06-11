@@ -148,7 +148,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 	{
 		framework.Create(hWnd);
-		SetTimer(hWnd, MAIN_TIMER, MAIN_TIEMR_FRAME, NULL);
+		SetTimer(hWnd, MAIN_TIMER, MAIN_TIMER_FRAME, NULL);
+		SetTimer(hWnd, MENU_TIMER, MENU_TIMER_FRAME, NULL);
 	}
 	break;
 
@@ -179,10 +180,28 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_TIMER:
 	{
-		framework.curFrameTime = clock();
-		framework.OnUpdate(framework.GetTick());
-		framework.prevFrameTime = framework.curFrameTime;
-		InvalidateRgn(hWnd, NULL, false);
+		switch (wParam) {
+		case 1:
+			if (framework.nowscene == GAME) {
+				framework.curFrameTime = clock();
+				framework.OnUpdate(framework.GetTick());
+				framework.prevFrameTime = framework.curFrameTime;
+				InvalidateRgn(hWnd, NULL, false);
+			}
+			else
+				break;
+		case 2:
+			if (framework.nowscene == MENU) {
+				framework.curFrameTime = clock();
+				framework.OnUpdate(framework.GetTick());
+				framework.prevFrameTime = framework.curFrameTime;
+				InvalidateRgn(hWnd, NULL, false);
+			}
+			else
+				break;
+			break;
+		}
+
 	}
 	break;
 

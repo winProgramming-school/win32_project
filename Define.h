@@ -1,10 +1,10 @@
 #pragma once
 
-#define MAIN_TIMER			1	
+#define MAIN_TIMER			1
+#define MENU_TIMER			2
 
-
-#define MAIN_TIEMR_FRAME	17 // 60FPS
-
+#define MAIN_TIMER_FRAME	20 // 60FPS
+#define MENU_TIMER_FRAME	80
 
 #define FRAME_WIDTH			1200
 #define FRAME_HEIGHT		720
@@ -15,13 +15,14 @@
 #define PLAYER_IMAGE_SIZE	512
 #define CLOUD_IMAGE_SIZE	512
 
-#define CLOUD_WIDTH			172
-#define CLOUD_HEIGHT		130
+#define CLOUD_WIDTH						172
+#define CLOUD_HEIGHT					130
 #define CLOUD_COLLIDE_WIDTH				150
-#define CLOUD_COLLIDE_HEIGHT			120
+#define CLOUD_COLLIDE_HEIGHT			90
 
 #define PLAYER_WIDTH		CLOUD_WIDTH / 2
 #define PLAYER_HEIGHT		CLOUD_HEIGHT - 50
+#define PLAYER_COLLIDE_WIDTH			CLOUD_WIDTH / 2 - 35
 
 #define PLAYERMOVE_STOP		MEM_HEIGHT - (FRAME_HEIGHT/2)		//처음 시작할 때 플레이어가 화면의 높이 반 이상 올라가면 화면 움직임
 #define PLAYERMOVE_START	FRAME_HEIGHT/2						//나중에 클리어 지점에 가까이 도달했을 때는 화면 멈추고 플레이어만 움직임

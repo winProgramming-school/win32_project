@@ -46,6 +46,7 @@ public:
 	void drawPlayer(HDC hdc);
 	void drawBackGround(HDC hdc);
 	void drawCloud(HDC hdc);
+	void drawBox(HDC hdc);
 
 	void InitCloud();
 	void InitAnimation();
