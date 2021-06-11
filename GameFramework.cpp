@@ -62,5 +62,5 @@ void WGameFramework::KeyBoard(UINT iMessage, WPARAM wParam, LPARAM lParam)
 
 float WGameFramework::GetTick()
 {
-	return (float)(curFrameTime - prevFrameTime);
+	return (float)(curFrameTime - prevFrameTime) / 1000;
 }
