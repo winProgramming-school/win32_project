@@ -28,6 +28,24 @@ void gameScene::InitCloud() {       //txt파일에서 구름 정보 받아오는 함수
     cloud_index = i;
     fclose(fp);
 }
+void gameScene::InitHeart() {
+    FILE* fp;
+    fopen_s(&fp, "image/map1(heart).txt", "r");
+
+    int i = 0;
+    if (fp == NULL)
+    {
+        perror("fopen 실패");
+        return;
+    }
+
+    while (!feof(fp)) {
+        fscanf_s(fp, "%d %d %d", &item[i].ix, &item[i].iy, &item[i++].what);
+    }
+
+    item_index = i;
+    fclose(fp);
+}
 void gameScene::InitAnimation() {
     int j = 0;
     for (int i = 0; i < 14; i++) {
@@ -84,7 +102,6 @@ void gameScene::InitAnimation() {
         j += 5;
     }
 }
-
 void gameScene::init()
 {
     startX = 0, startY = MEM_HEIGHT - (FRAME_HEIGHT);
@@ -102,6 +119,7 @@ void gameScene::init()
 
     InitAnimation();
     InitCloud();
+    InitHeart();
     ani_index = 0;      //충돌이면 20~27, 평상시면 0~19
     gravity = 1;
     bar_w = 498;
@@ -143,7 +161,18 @@ void gameScene::drawCloud(HDC hdc) {
         }
     }
 }
-
+void gameScene::drawItems(HDC hdc) {
+    for (int j = 0; j < item_index; ++j) {
+        switch (item[j].what) {
+        case 1:
+            heart.Draw(hdc, item[j].ix, item[j].iy, ITEM_SIZE, ITEM_SIZE, 0, 0, heart.GetWidth(), heart.GetHeight());
+            break;
+        case 2:
+            stone.Draw(hdc, item[j].ix, item[j].iy, ITEM_SIZE, ITEM_SIZE, 0, 0, stone.GetWidth(), stone.GetHeight());
+            break;
+        }
+    }
+}
 void gameScene::drawHPBar(HDC hdc) {
     HBRUSH myBrush = (HBRUSH)CreateSolidBrush(RGB(150, 50, 0));
     HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
@@ -222,7 +251,7 @@ void gameScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
     {
         if (wParam == VK_UP) {
             fall = true;
-            gravity = 2;
+            gravity = 1.8;
         }
         else if (wParam == VK_RIGHT || wParam == VK_LEFT) {
             fall = true;
@@ -278,8 +307,8 @@ void gameScene::Update(const float frameTime)
     //    player.py += 10 * frameTime;
     //}
 
-    if (fall && gravity >= -27)
-        gravity -= frameTime * 10;
+    if (fall && gravity >= -30)
+        gravity -= frameTime * 12;
 
     if (fall && player.py <= PLAYER_FIRSTY) {
         if(!player.status)
@@ -396,6 +425,7 @@ void gameScene::Render(HDC hdc)
     //drawBox(hdc);
     drawPlayer(hdc);
     drawCloud(hdc);
+    drawItems(hdc);
     drawHPBar(hdc);
 }
 

@@ -6,11 +6,16 @@ typedef struct Player {
 	int status = 1;		//상태 0: 충돌 1: 평상시
 	int jump;
 }Player;
+
 typedef struct Cloud {
 	int cx, cy;
 	int what;			//1: 먹구름 2: 비구름 3: 일반구름
 	int index;
 }Cloud;
+typedef struct Item {
+	int ix, iy;
+	int what;			//1: 하트 2: 돌
+}Item;
 
 class gameScene : public scene {
 public:
@@ -20,6 +25,7 @@ public:
 
 	int ani_index;		//애니메이션 index(플레이어)
 	int cloud_index;	//구름 개수
+	int item_index;		//하트랑 스톤 개수
 	int bar_startY;
 	int bar_w;
 
@@ -35,7 +41,7 @@ public:
 
 	Player player;
 	Cloud cloud[200];
-
+	Item item[15];
 public:
 	virtual ~gameScene() override;
 
@@ -52,7 +58,9 @@ public:
 	void drawCloud(HDC hdc);
 	void drawBox(HDC hdc);
 	void drawHPBar(HDC hdc);
+	void drawItems(HDC hdc);
 
 	void InitCloud();
 	void InitAnimation();
+	void InitHeart();
 };
