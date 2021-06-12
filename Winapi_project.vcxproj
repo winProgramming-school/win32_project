@@ -141,6 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="clearScene.cpp" />
     <ClCompile Include="GameFramework.cpp" />
     <ClCompile Include="gameScene.cpp" />
     <ClCompile Include="main.cpp" />
@@ -150,6 +151,7 @@
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="clearScene.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="GameFramework.h" />
