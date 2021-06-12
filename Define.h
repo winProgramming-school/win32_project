@@ -4,7 +4,7 @@
 #define MENU_TIMER			2
 
 #define MAIN_TIMER_FRAME	20 // 60FPS
-#define MENU_TIMER_FRAME	80
+#define MENU_TIMER_FRAME	150
 
 #define FRAME_WIDTH			1200
 #define FRAME_HEIGHT		720
@@ -14,7 +14,8 @@
 
 #define PLAYER_IMAGE_SIZE	512
 #define CLOUD_IMAGE_SIZE	512
-#define RAINCLOUD_IMAGE		562
+#define RAINCLOUD_IMAGE		329
+#define RAIN_IMAGE			562
 
 #define CLOUD_WIDTH						172
 #define CLOUD_HEIGHT					130
