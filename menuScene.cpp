@@ -1,7 +1,7 @@
 #include "menuScene.h"
 #include "stdafx.h"
 
-WGameFramework framework;
+extern WGameFramework framework;
 
 menuScene::~menuScene()
 {
