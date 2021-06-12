@@ -16,9 +16,12 @@ class gameScene : public scene {
 public:
 	RECT animation[28];	//평상시 애니메이션(리소스 위치)
 	RECT cloud_ani[50];
+	RECT raincloud_ani[50];
 
 	int ani_index;		//애니메이션 index(플레이어)
 	int cloud_index;	//구름 개수
+	int bar_startY;
+	int bar_w;
 
 	float gravity;
 	bool fall;			//떨어지는 상태
@@ -27,6 +30,7 @@ public:
 	RECT tmp;			//충돌 검사할 사각형
 
 	CImage player_image, background;
+	CImage heart, stone;
 	CImage normalCloud, rainCloud, darkCloud;
 
 	Player player;
@@ -47,6 +51,7 @@ public:
 	void drawBackGround(HDC hdc);
 	void drawCloud(HDC hdc);
 	void drawBox(HDC hdc);
+	void drawHPBar(HDC hdc);
 
 	void InitCloud();
 	void InitAnimation();

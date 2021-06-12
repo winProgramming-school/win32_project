@@ -49,6 +49,15 @@ void gameScene::InitAnimation() {
         cloud_ani[j + 4] = { i * CLOUD_IMAGE_SIZE, 0, (i + 1) * CLOUD_IMAGE_SIZE, CLOUD_IMAGE_SIZE };
         j += 5;
     }
+    j = 0;
+    for (int i = 0; i < 10; i++) {
+        raincloud_ani[j] = { i * CLOUD_IMAGE_SIZE, 0, (i + 1) * CLOUD_IMAGE_SIZE, RAINCLOUD_IMAGE };
+        raincloud_ani[j + 1] = { i * CLOUD_IMAGE_SIZE, 0, (i + 1) * CLOUD_IMAGE_SIZE, RAINCLOUD_IMAGE };
+        raincloud_ani[j + 2] = { i * CLOUD_IMAGE_SIZE, 0, (i + 1) * CLOUD_IMAGE_SIZE, RAINCLOUD_IMAGE };
+        raincloud_ani[j + 3] = { i * CLOUD_IMAGE_SIZE, 0, (i + 1) * CLOUD_IMAGE_SIZE, RAINCLOUD_IMAGE };
+        raincloud_ani[j + 4] = { i * CLOUD_IMAGE_SIZE, 0, (i + 1) * CLOUD_IMAGE_SIZE, RAINCLOUD_IMAGE };
+        j += 5;
+    }
 }
 
 void gameScene::init()
@@ -61,11 +70,15 @@ void gameScene::init()
     rainCloud.Load(TEXT("image/비구름.png"));
     darkCloud.Load(TEXT("image/먹구름.png"));
 
+    heart.Load(TEXT("image/heart.png"));
+    stone.Load(TEXT("image/stone.png"));
+
     InitAnimation();
     InitCloud();
     ani_index = 0;      //충돌이면 20~27, 평상시면 0~19
     gravity = 1;
-
+    bar_w = 498;
+    bar_startY = PLAYER_FIRSTY + 100;
     fall = true;
 
     player = { MEM_WIDTH/2, PLAYER_FIRSTY, 1, 0 };      //플레이어 시작위치
@@ -90,13 +103,31 @@ void gameScene::drawCloud(HDC hdc) {
             darkCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT, cloud_ani[cloud[j].index].left, cloud_ani[cloud[j].index].top, CLOUD_IMAGE_SIZE, CLOUD_IMAGE_SIZE);
             break;
         case 2:
-            rainCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT, cloud_ani[cloud[j].index].left, cloud_ani[cloud[j].index].top, CLOUD_IMAGE_SIZE, CLOUD_IMAGE_SIZE);
+            rainCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT, raincloud_ani[cloud[j].index].left, raincloud_ani[cloud[j].index].top, CLOUD_IMAGE_SIZE, RAINCLOUD_IMAGE);
             break;
         case 3:
             normalCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT, cloud_ani[cloud[j].index].left, cloud_ani[cloud[j].index].top, CLOUD_IMAGE_SIZE, CLOUD_IMAGE_SIZE);
             break;
         }
     }
+}
+
+void gameScene::drawHPBar(HDC hdc) {
+    HBRUSH myBrush = (HBRUSH)CreateSolidBrush(RGB(150, 50, 0));
+    HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
+    Rectangle(hdc, 50, bar_startY + 1, bar_w + 50, bar_startY + 29);
+    SelectObject(hdc, oldBrush);
+    DeleteObject(myBrush);
+
+    myBrush = (HBRUSH)GetStockObject(NULL_BRUSH);
+    oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
+    HPEN hPen = CreatePen(PS_DOT, 2, RGB(0, 0, 0));
+    HPEN oldPen = (HPEN)SelectObject(hdc, hPen); 
+    Rectangle(hdc, 50, bar_startY, HPBAR_WIDTH + 50, bar_startY + 30);
+    SelectObject(hdc, oldBrush);
+    DeleteObject(myBrush);
+    SelectObject(hdc, oldPen);
+    DeleteObject(hPen);
 }
 
 void gameScene::drawBox(HDC hdc) {
@@ -198,63 +229,129 @@ void gameScene::Update(const float frameTime)
             break;
         }
     }
-
-    if (!fall && player.py <= PLAYER_FIRSTY && (player.py <= PLAYERMOVE_START || player.py >= PLAYERMOVE_STOP))
-        player.py += 10 * frameTime;
-    else if (!fall && player.py >= PLAYERMOVE_START && player.py <= PLAYERMOVE_STOP){
-        startY += 10 * frameTime;
-        player.py += 10 * frameTime;
+    if (!player.status) {           //플레이어가 충돌상태이면 체력 감소
+        bar_w -= 20 * frameTime;
     }
+
+    //if (!fall && player.py <= PLAYER_FIRSTY && (player.py <= PLAYERMOVE_START || player.py >= PLAYERMOVE_STOP))
+    //    player.py += 10 * frameTime;
+    //else if (!fall && player.py >= PLAYERMOVE_START && player.py <= PLAYERMOVE_STOP){
+    //    startY += 10 * frameTime;
+    //    bar_startY += 10 * frameTime;
+    //    player.py += 10 * frameTime;
+    //}
 
     if (fall && gravity >= -30)
         gravity -= frameTime * 10;
 
     if (fall && player.py <= PLAYER_FIRSTY) {
-        player.py -= gravity;
-        if(startY <= MEM_HEIGHT - (FRAME_HEIGHT))
-            startY -= gravity;
+        if(!player.status)
+            player.py -= gravity/3;
+        else
+            player.py -= gravity;
+        if (startY <= MEM_HEIGHT - (FRAME_HEIGHT) && player.py >= PLAYERMOVE_START) {
+            if (!player.status) {
+                startY -= gravity/3;
+                bar_startY -= gravity/3;
+            }
+            else {
+                startY -= gravity;
+                bar_startY -= gravity;
+            }
+        }
     }
 
     if ((GetAsyncKeyState(VK_LEFT) & 0x8000) && (GetAsyncKeyState(VK_UP) & 0x8001)) {
         fall = false;
         if (player.py <= PLAYERMOVE_START || player.py >= PLAYERMOVE_STOP) {
-            player.py -= 7;
-            player.px -= 7;
+            if (!player.status) {
+                player.py -= 2;
+                player.px -= 2;
+            }
+            else {
+                player.py -= 7;
+                player.px -= 7;
+            }
         }
         else {
-            startY -= 7;
-            player.py -= 7;
-            player.px -= 7;
+            if (!player.status) {
+                startY -= 2;
+                bar_startY -= 2;
+                player.py -= 2;
+                player.px -= 2;
+            }
+            else {
+                startY -= 7;
+                bar_startY -= 7;
+                player.py -= 7;
+                player.px -= 7;
+            }
         }
         return;
     }
     if ((GetAsyncKeyState(VK_RIGHT) & 0x8000) && (GetAsyncKeyState(VK_UP) & 0x8001)) {
         fall = false;
         if (player.py <= PLAYERMOVE_START || player.py >= PLAYERMOVE_STOP) {
-            player.py -= 7;
-            player.px += 7;
+            if (!player.status) {
+                player.py -= 2;
+                player.px += 2;
+            }
+            else {
+                player.py -= 7;
+                player.px += 7;
+            }
         }
         else {
-            startY -= 7;
-            player.py -= 7;
-            player.px += 7;
+            if (!player.status) {
+                startY -= 2;
+                bar_startY -= 2;
+                player.py -= 2;
+                player.px += 2;
+            }
+            else {
+                startY -= 7;
+                bar_startY -= 7;
+                player.py -= 7;
+                player.px += 7;
+            }
         }
         return;
     }
     if ((GetAsyncKeyState(VK_UP) & 0x8001)) {
         fall = false;
         if (player.py <= PLAYERMOVE_START || player.py >= PLAYERMOVE_STOP) {
-            player.py -= 7;
+            if(!player.status)
+                player.py -= 2;
+            else
+                player.py -= 7;
         }
         else {
-            startY -= 7;
-            player.py -= 7;
+            if (!player.status) {
+                startY -= 2;
+                bar_startY -= 2;
+                player.py -= 2;
+            }
+            else {
+                startY -= 7;
+                bar_startY -= 7;
+                player.py -= 7;
+            }
         }
     }
-    else if ((GetAsyncKeyState(VK_RIGHT) & 0x8000) || (GetAsyncKeyState(VK_RIGHT) & 0x8001))
-        player.px += 5;
-    else if ((GetAsyncKeyState(VK_LEFT) & 0x8000) || (GetAsyncKeyState(VK_LEFT) & 0x8001))
-        player.px -= 5;
+    else if ((GetAsyncKeyState(VK_RIGHT) & 0x8000) || (GetAsyncKeyState(VK_RIGHT) & 0x8001)) {
+        if (!player.status)
+            player.px += 2;
+        else
+            player.px += 5;
+    }
+
+    else if ((GetAsyncKeyState(VK_LEFT) & 0x8000) || (GetAsyncKeyState(VK_LEFT) & 0x8001)) {
+        if (!player.status)
+            player.px -= 2;
+        else
+            player.px -= 5;
+    }
+
 
 
 }
@@ -265,6 +362,7 @@ void gameScene::Render(HDC hdc)
     //drawBox(hdc);
     drawPlayer(hdc);
     drawCloud(hdc);
+    drawHPBar(hdc);
 }
 
 
