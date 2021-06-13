@@ -23,6 +23,7 @@
 #define CLOUD_COLLIDE_HEIGHT			90
 
 #define ITEM_SIZE						30
+#define ITEM_START						700
 
 #define PLAYER_WIDTH					CLOUD_WIDTH / 2
 #define PLAYER_HEIGHT					CLOUD_HEIGHT - 50
