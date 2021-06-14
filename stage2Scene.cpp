@@ -7,6 +7,7 @@ stage2Scene::~stage2Scene()
 {
 
 }
+
 void stage2Scene::InitCloud() {       //txt파일에서 구름 정보 받아오는 함수
     FILE* fp;
     fopen_s(&fp, "image/map2.txt", "r");
@@ -131,6 +132,7 @@ void stage2Scene::init()
     bar_w = 498;
     bar_startY = (STAGE2_HEIGHT - (CLOUD_HEIGHT + 50)) + 100;
     fall = true;
+    status = RUN;
 
     player = { MEM_WIDTH / 2, (STAGE2_HEIGHT - (CLOUD_HEIGHT + 50)), 1, 0 };      //플레이어 시작위치
 }
@@ -216,7 +218,13 @@ void stage2Scene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
     {
     case WM_KEYDOWN:
     {
-
+        if (wParam == VK_ESCAPE) {
+            if (status == PAUSE)
+                status = RUN;
+            else
+                status = PAUSE;
+            break;
+        }
     }
     break;
     case WM_KEYUP:
@@ -245,6 +253,8 @@ bool stage2Scene::getItemCheck() {
 //애니메이션 있으면 여기서 업데이트
 void stage2Scene::Update(const float frameTime)
 {
+    if (status == PAUSE)
+        return;
 
     if (player.status) {          //충돌이 아닐 때
         ani_index++;
@@ -298,14 +308,6 @@ void stage2Scene::Update(const float frameTime)
         }
     }
 
-    //if (!fall && player.py <= PLAYER_FIRSTY && (player.py <= PLAYERMOVE_START || player.py >= PLAYERMOVE_STOP))
-    //    player.py += 10 * frameTime;
-    //else if (!fall && player.py >= PLAYERMOVE_START && player.py <= PLAYERMOVE_STOP){
-    //    startY += 10 * frameTime;
-    //    bar_startY += 10 * frameTime;
-    //    player.py += 10 * frameTime;
-    //}
-
     if (fall && gravity >= -30)
         gravity -= frameTime * 12;
 
@@ -339,13 +341,6 @@ void stage2Scene::Update(const float frameTime)
                 player.py -= 7;
                 player.px -= 7;
             }
-            if (player.py <= 0 && getItemCheck()) {
-                scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
-                framework.curScene = new clearScene;
-                framework.curScene->init();
-                framework.nowscene = MENU;
-                delete scene;
-            }
         }
         else {
             if (!player.status) {
@@ -376,13 +371,6 @@ void stage2Scene::Update(const float frameTime)
                 player.py -= 7;
                 player.px += 7;
             }
-            if (player.py <= 0 && getItemCheck()) {
-                scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
-                framework.curScene = new clearScene;
-                framework.curScene->init();
-                framework.nowscene = MENU;
-                delete scene;
-            }
         }
         else {
             if (!player.status) {
@@ -410,13 +398,6 @@ void stage2Scene::Update(const float frameTime)
             else
                 player.py -= 7;
 
-            if (player.py <= 0 && getItemCheck()) {
-                scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
-                framework.curScene = new clearScene;
-                framework.curScene->init();
-                framework.nowscene = MENU;
-                delete scene;
-            }
         }
         else {
             if (!player.status) {
@@ -445,6 +426,16 @@ void stage2Scene::Update(const float frameTime)
             player.px -= 2;
         else
             player.px -= 5;
+    }
+
+    if (player.py <= 0) {
+        if (getItemCheck()==TRUE) {
+            scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
+            framework.curScene = new clearScene;
+            framework.curScene->init();
+            framework.nowscene = MENU;
+            delete scene;
+        }
     }
 }
 void stage2Scene::Render(HDC hdc)
