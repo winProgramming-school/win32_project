@@ -40,7 +40,8 @@ void gameScene::InitHeart() {
     }
 
     while (!feof(fp)) {
-        fscanf_s(fp, "%d %d %d", &item[i].ix, &item[i].iy, &item[i++].what);
+        fscanf_s(fp, "%d %d %d", &item[i].ix, &item[i].iy, &item[i].what);
+        ++i;
     }
 
     item_index = i;
@@ -134,12 +135,10 @@ void gameScene::drawPlayer(HDC hdc) {
     player_image.Draw(hdc, player.px, player.py, PLAYER_WIDTH, PLAYER_HEIGHT, animation[ani_index].left, animation[ani_index].top,
         PLAYER_IMAGE_SIZE, PLAYER_IMAGE_SIZE);
 }
-
 void gameScene::drawBackGround(HDC hdc) {
     //배경 그리는 함수
     background.BitBlt(hdc, 0, 0, SRCCOPY);
 }
-
 void gameScene::drawCloud(HDC hdc) {
     //구름 그리는 함수
     for (int j = 0; j < cloud_index; ++j) {
@@ -190,7 +189,6 @@ void gameScene::drawHPBar(HDC hdc) {
     SelectObject(hdc, oldPen);
     DeleteObject(hPen);
 }
-
 void gameScene::drawBox(HDC hdc) {
     Rectangle(hdc, pRECT.left, pRECT.top, pRECT.right, pRECT.bottom);
     for (int i = 0; i < cloud_index; ++i) {
@@ -198,52 +196,21 @@ void gameScene::drawBox(HDC hdc) {
     }
     
 }
+
+void gameScene::moveItem() {
+    for (int i = 0; i < item_index; ++i) {
+        if (item[i].get == 1) {
+            item[i].iy = bar_startY;
+        }
+    }
+}
+
 void gameScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
     switch (iMessage)
     {
     case WM_KEYDOWN:
     {
-        //if ((GetAsyncKeyState(VK_LEFT) & 0x8000) && (GetAsyncKeyState(VK_UP) & 0x8000)) {
-        //    fall = false;
-        //    if (player.py <= PLAYERMOVE_START || player.py >= PLAYERMOVE_STOP) {
-        //        player.py -= 7;
-        //        player.px -= 7;
-        //    }
-        //    else {
-        //        startY -= 7;
-        //        player.py -= 7;
-        //        player.px -= 7;
-        //    }
-        //    break;
-        //}
-        //if ((GetAsyncKeyState(VK_RIGHT) & 0x8000) && (GetAsyncKeyState(VK_UP) & 0x8000)) {
-        //    fall = false;
-        //    if (player.py <= PLAYERMOVE_START || player.py >= PLAYERMOVE_STOP) {
-        //        player.py -= 7;
-        //        player.px += 7;
-        //    }
-        //    else {
-        //        startY -= 7;
-        //        player.py -= 7;
-        //        player.px += 7;
-        //    }
-        //    break;
-        //}
-        //if ((GetAsyncKeyState(VK_UP) & 0x8001)) {
-        //    fall = false;
-        //    if (player.py <= PLAYERMOVE_START || player.py >= PLAYERMOVE_STOP) {
-        //        player.py -= 7;
-        //    }
-        //    else {
-        //        startY -= 7;
-        //        player.py -= 7;
-        //    }
-        //}
-        //else if ((GetAsyncKeyState(VK_RIGHT) & 0x8000) || (GetAsyncKeyState(VK_RIGHT) & 0x8001))
-        //    player.px += 5;
-        //else if ((GetAsyncKeyState(VK_LEFT) & 0x8000) || (GetAsyncKeyState(VK_LEFT) & 0x8001))
-        //    player.px -= 5;
 
     }
     break;
@@ -255,7 +222,7 @@ void gameScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
         }
         else if (wParam == VK_RIGHT || wParam == VK_LEFT) {
             fall = true;
-            gravity = 1;
+            gravity = 0.5;
         }
     }
     break;
@@ -268,7 +235,7 @@ void gameScene::Update(const float frameTime)
 
     if (player.status) {          //충돌이 아닐 때
         ani_index++;
-        if (ani_index == 20)
+        if (ani_index == 28)
             ani_index = 0;
     }
     else
@@ -281,23 +248,44 @@ void gameScene::Update(const float frameTime)
 
     for (int i = 0; i < cloud_index; ++i) {
         cloud[i].index++;
-        if (cloud[i].index == 50)
+        if (cloud[i].index == 74)
             cloud[i].index = 0;
         cRECT = { cloud[i].cx+30, cloud[i].cy+30, cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + CLOUD_COLLIDE_HEIGHT };
-        if (IntersectRect(&tmp, &cRECT, &pRECT) && i > 6) {          //충돌 검사
+        if (IntersectRect(&tmp, &cRECT, &pRECT) && i > 6) {                             //충돌 검사
             player.status = 0;
             ani_index = 20;
         }
+        if (cloud[i].what != 3 && cloud[i].index >=35 && cloud[i].index <= 59 ) {       //번개나 비 충돌 검사
+            cRECT = { cloud[i].cx+30, cloud[i].cy + (CLOUD_HEIGHT - 30),              //비 범위
+                cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + (CLOUD_HEIGHT - 30) + CLOUD_HEIGHT };
+            if (IntersectRect(&tmp, &cRECT, &pRECT)) {                             //충돌 검사
+                player.status = 0;
+                ani_index = 20;
+            }
+        }
     }
+
     if (!player.status) {           //플레이어가 충돌상태이면 체력 감소
-        bar_w -= 20 * frameTime;
+        bar_w -= 40 * frameTime;
     }
+    bar_w -= 0.5 * frameTime;       //항상 감소
+
     if (bar_w <= 0) {
         scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
         framework.curScene = new overScene;
         framework.curScene->init();
         framework.nowscene = MENU;
         delete scene;
+        return;
+    }
+
+    for (int i = 0; i < item_index; ++i) {                                  //플레이어가 아이템 먹었는지 검사
+        cRECT = { item[i].ix, item[i].iy, item[i].ix + ITEM_SIZE, item[i].iy + ITEM_SIZE };
+        if (IntersectRect(&tmp, &cRECT, &pRECT)) {
+            item[i].ix = ITEM_START + i * 40;
+            item[i].iy = bar_startY;
+            item[i].get = 1;
+        }
     }
     //if (!fall && player.py <= PLAYER_FIRSTY && (player.py <= PLAYERMOVE_START || player.py >= PLAYERMOVE_STOP))
     //    player.py += 10 * frameTime;
@@ -319,10 +307,12 @@ void gameScene::Update(const float frameTime)
             if (!player.status) {
                 startY -= gravity/3;
                 bar_startY -= gravity/3;
+                moveItem();
             }
             else {
                 startY -= gravity;
                 bar_startY -= gravity;
+                moveItem();
             }
         }
     }
@@ -343,12 +333,14 @@ void gameScene::Update(const float frameTime)
             if (!player.status) {
                 startY -= 2;
                 bar_startY -= 2;
+                moveItem();
                 player.py -= 2;
                 player.px -= 2;
             }
             else {
                 startY -= 7;
                 bar_startY -= 7;
+                moveItem();
                 player.py -= 7;
                 player.px -= 7;
             }
@@ -371,12 +363,14 @@ void gameScene::Update(const float frameTime)
             if (!player.status) {
                 startY -= 2;
                 bar_startY -= 2;
+                moveItem();
                 player.py -= 2;
                 player.px += 2;
             }
             else {
                 startY -= 7;
                 bar_startY -= 7;
+                moveItem();
                 player.py -= 7;
                 player.px += 7;
             }
@@ -395,11 +389,13 @@ void gameScene::Update(const float frameTime)
             if (!player.status) {
                 startY -= 2;
                 bar_startY -= 2;
+                moveItem();
                 player.py -= 2;
             }
             else {
                 startY -= 7;
                 bar_startY -= 7;
+                moveItem();
                 player.py -= 7;
             }
         }
