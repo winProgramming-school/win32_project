@@ -20,7 +20,7 @@ typedef struct Item {
 
 class gameScene : public scene {
 public:
-	RECT animation[28];	//평상시 애니메이션(리소스 위치)
+	RECT animation[56];	//평상시 애니메이션(리소스 위치)
 	RECT cloud_ani[75];
 	RECT rain_ani[35];
 
@@ -66,4 +66,5 @@ public:
 	void InitHeart();
 
 	void moveItem();
+	bool getItemCheck();
 };

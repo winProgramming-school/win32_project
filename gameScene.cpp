@@ -49,10 +49,15 @@ void gameScene::InitHeart() {
 }
 void gameScene::InitAnimation() {
     int j = 0;
+    //14개
+    //1애니메이션 4개
+    //0 ~ 3, ... ~39
     for (int i = 0; i < 14; i++) {
         animation[j] = { i * PLAYER_IMAGE_SIZE, 0, (i + 1) * PLAYER_IMAGE_SIZE, PLAYER_IMAGE_SIZE };
         animation[j + 1] = { i * PLAYER_IMAGE_SIZE, 0, (i + 1) * PLAYER_IMAGE_SIZE, PLAYER_IMAGE_SIZE };
-        j += 2;
+        animation[j + 2] = { i * PLAYER_IMAGE_SIZE, 0, (i + 1) * PLAYER_IMAGE_SIZE, PLAYER_IMAGE_SIZE };
+        animation[j + 3] = { i * PLAYER_IMAGE_SIZE, 0, (i + 1) * PLAYER_IMAGE_SIZE, PLAYER_IMAGE_SIZE };
+        j += 4;
     }
     j = 0;
 
@@ -204,7 +209,6 @@ void gameScene::moveItem() {
         }
     }
 }
-
 void gameScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
     switch (iMessage)
@@ -229,22 +233,29 @@ void gameScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
     }
 }
 
+bool gameScene::getItemCheck() {
+    for (int i = 0; i < item_index; ++i) {
+        if (item[i].get == 0)
+            return false;
+    }
+    return true;
+}
+
 //애니메이션 있으면 여기서 업데이트
 void gameScene::Update(const float frameTime)
 {
+    if (!player.status)
+        ani_index = 0;
 
     if (player.status) {          //충돌이 아닐 때
         ani_index++;
-        if (ani_index == 28)
+        if (ani_index == 39)
             ani_index = 0;
     }
-    else
-        ani_index = 20;
 
     pRECT = { player.px+18,player.py + 10,player.px+18 + PLAYER_COLLIDE_WIDTH ,player.py + PLAYER_HEIGHT};
 
     player.status = 1;
-    ani_index = 0;
 
     for (int i = 0; i < cloud_index; ++i) {
         cloud[i].index++;
@@ -253,14 +264,14 @@ void gameScene::Update(const float frameTime)
         cRECT = { cloud[i].cx+30, cloud[i].cy+30, cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + CLOUD_COLLIDE_HEIGHT };
         if (IntersectRect(&tmp, &cRECT, &pRECT) && i > 6) {                             //충돌 검사
             player.status = 0;
-            ani_index = 20;
+            ani_index = 50;
         }
         if (cloud[i].what != 3 && cloud[i].index >=35 && cloud[i].index <= 59 ) {       //번개나 비 충돌 검사
             cRECT = { cloud[i].cx+30, cloud[i].cy + (CLOUD_HEIGHT - 30),              //비 범위
                 cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + (CLOUD_HEIGHT - 30) + CLOUD_HEIGHT };
             if (IntersectRect(&tmp, &cRECT, &pRECT)) {                             //충돌 검사
                 player.status = 0;
-                ani_index = 20;
+                ani_index = 50;
             }
         }
     }
@@ -287,6 +298,7 @@ void gameScene::Update(const float frameTime)
             item[i].get = 1;
         }
     }
+
     //if (!fall && player.py <= PLAYER_FIRSTY && (player.py <= PLAYERMOVE_START || player.py >= PLAYERMOVE_STOP))
     //    player.py += 10 * frameTime;
     //else if (!fall && player.py >= PLAYERMOVE_START && player.py <= PLAYERMOVE_STOP){
@@ -328,6 +340,13 @@ void gameScene::Update(const float frameTime)
                 player.py -= 7;
                 player.px -= 7;
             }
+            if (player.py <= 0 && getItemCheck()) {
+                scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
+                framework.curScene = new clearScene;
+                framework.curScene->init();
+                framework.nowscene = MENU;
+                delete scene;
+            }
         }
         else {
             if (!player.status) {
@@ -358,6 +377,13 @@ void gameScene::Update(const float frameTime)
                 player.py -= 7;
                 player.px += 7;
             }
+            if (player.py <= 0 && getItemCheck()) {
+                scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
+                framework.curScene = new clearScene;
+                framework.curScene->init();
+                framework.nowscene = MENU;
+                delete scene;
+            }
         }
         else {
             if (!player.status) {
@@ -384,6 +410,14 @@ void gameScene::Update(const float frameTime)
                 player.py -= 2;
             else
                 player.py -= 7;
+
+            if (player.py <= 0 && getItemCheck()) {
+                scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
+                framework.curScene = new clearScene;
+                framework.curScene->init();
+                framework.nowscene = MENU;
+                delete scene;
+            }
         }
         else {
             if (!player.status) {
@@ -414,7 +448,6 @@ void gameScene::Update(const float frameTime)
             player.px -= 5;
     }
 }
-
 void gameScene::Render(HDC hdc)
 {
     drawBackGround(hdc);
@@ -424,6 +457,7 @@ void gameScene::Render(HDC hdc)
     drawItems(hdc);
     drawHPBar(hdc);
 }
+
 
 
 //void gameScene::Release() {
