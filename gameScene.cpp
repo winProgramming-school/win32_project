@@ -235,7 +235,7 @@ void gameScene::Update(const float frameTime)
 
     if (player.status) {          //충돌이 아닐 때
         ani_index++;
-        if (ani_index == 20)
+        if (ani_index == 28)
             ani_index = 0;
     }
     else
