@@ -28,8 +28,8 @@ void WGameFramework::Clear()
 void WGameFramework::Create(HWND hWnd)
 {
 	m_hWnd = hWnd;
-	curScene = new menuScene;	//처음에는 게임 시작 화면으로
-	nowscene = MENU;
+	curScene = new stage2Scene;	//처음에는 게임 시작 화면으로
+	nowscene = STAGE2;
 	curScene->init();
 }
 

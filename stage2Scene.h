@@ -1,25 +1,8 @@
 #pragma once
 #include "scene.h"
 
-typedef struct Player {
-	int px, py;
-	int status = 1;		//상태 0: 충돌 1: 평상시
-	int jump;
-}Player;
 
-typedef struct Cloud {
-	int cx, cy;
-	int what;			//1: 먹구름 2: 비구름 3: 일반구름
-	int index;
-}Cloud;
-
-typedef struct Item {
-	int ix, iy;
-	int what;			//1: 하트 2: 돌
-	int get=0;			//0: 아직 안 먹음 1: 먹음
-}Item;
-
-class gameScene : public scene {
+class stage2Scene : public scene {
 public:
 	RECT animation[56];	//평상시 애니메이션(리소스 위치)
 	RECT cloud_ani[75];
@@ -47,8 +30,9 @@ public:
 	Player player;
 	Cloud cloud[200];
 	Item item[15];
+
 public:
-	virtual ~gameScene() override;
+	virtual ~stage2Scene() override;
 
 	virtual void init() override;
 

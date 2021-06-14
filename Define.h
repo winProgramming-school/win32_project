@@ -12,6 +12,8 @@
 #define MEM_WIDTH			1200
 #define MEM_HEIGHT			1550
 
+#define STAGE2_HEIGHT		4650
+
 #define PLAYER_IMAGE_SIZE	512
 #define CLOUD_IMAGE_SIZE	512
 #define RAINCLOUD_IMAGE		329
@@ -23,6 +25,7 @@
 #define CLOUD_COLLIDE_HEIGHT			90
 
 #define ITEM_SIZE						30
+#define ITEM_START						700
 
 #define PLAYER_WIDTH					CLOUD_WIDTH / 2
 #define PLAYER_HEIGHT					CLOUD_HEIGHT - 50
@@ -32,7 +35,7 @@
 #define PLAYERMOVE_START				FRAME_HEIGHT/2						//나중에 클리어 지점에 가까이 도달했을 때는 화면 멈추고 플레이어만 움직임
 #define PLAYER_FIRSTY					MEM_HEIGHT- (CLOUD_HEIGHT + 50)		//플레이어 처음 시작 y지점
 
-#define HPBAR_WIDTH			500
+#define HPBAR_WIDTH						500
 
 // KeyBoard
 enum VK_KEY

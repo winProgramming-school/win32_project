@@ -1,15 +1,15 @@
 #include "stdafx.h"
-#include "gameScene.h"
+#include "stage2Scene.h"
 //memdc에 그려주는 역할, frame
 extern WGameFramework framework;
 
-gameScene::~gameScene()
+stage2Scene::~stage2Scene()
 {
 
 }
-void gameScene::InitCloud() {       //txt파일에서 구름 정보 받아오는 함수
+void stage2Scene::InitCloud() {       //txt파일에서 구름 정보 받아오는 함수
     FILE* fp;
-    fopen_s(&fp, "image/map1.txt", "r");
+    fopen_s(&fp, "image/map2.txt", "r");
     random_device rd;
     uniform_int_distribution <int> dis(0, 49);
 
@@ -28,9 +28,9 @@ void gameScene::InitCloud() {       //txt파일에서 구름 정보 받아오는 함수
     cloud_index = i;
     fclose(fp);
 }
-void gameScene::InitHeart() {
+void stage2Scene::InitHeart() {
     FILE* fp;
-    fopen_s(&fp, "image/map1(heart).txt", "r");
+    fopen_s(&fp, "image/map2(heart).txt", "r");
 
     int i = 0;
     if (fp == NULL)
@@ -47,7 +47,7 @@ void gameScene::InitHeart() {
     item_index = i;
     fclose(fp);
 }
-void gameScene::InitAnimation() {
+void stage2Scene::InitAnimation() {
     int j = 0;
     //14개
     //1애니메이션 4개
@@ -91,11 +91,11 @@ void gameScene::InitAnimation() {
     }
     j = 0;
     for (int i = 0; i < 7; i++) {
-        if (i == 5 || i ==6) {
+        if (i == 5 || i == 6) {
             rain_ani[j] = { 4 * CLOUD_IMAGE_SIZE, 0, 5 * CLOUD_IMAGE_SIZE, RAIN_IMAGE };
             rain_ani[j + 1] = { 4 * CLOUD_IMAGE_SIZE, 0, 5 * CLOUD_IMAGE_SIZE, RAIN_IMAGE };
             rain_ani[j + 2] = { 4 * CLOUD_IMAGE_SIZE, 0, 5 * CLOUD_IMAGE_SIZE, RAIN_IMAGE };
-            rain_ani[j + 3] = {4* CLOUD_IMAGE_SIZE, 0, 5 * CLOUD_IMAGE_SIZE, RAIN_IMAGE };
+            rain_ani[j + 3] = { 4 * CLOUD_IMAGE_SIZE, 0, 5 * CLOUD_IMAGE_SIZE, RAIN_IMAGE };
             rain_ani[j + 4] = { 4 * CLOUD_IMAGE_SIZE, 0, 5 * CLOUD_IMAGE_SIZE, RAIN_IMAGE };
         }
         else {
@@ -108,9 +108,9 @@ void gameScene::InitAnimation() {
         j += 5;
     }
 }
-void gameScene::init()
+void stage2Scene::init()
 {
-    startX = 0, startY = MEM_HEIGHT - (FRAME_HEIGHT);
+    startX = 0, startY = STAGE2_HEIGHT - (FRAME_HEIGHT);
 
     player_image.Load(TEXT("image/꼬물이.png"));
     background.Load(TEXT("image/배경화면1.png"));
@@ -129,22 +129,22 @@ void gameScene::init()
     ani_index = 0;      //충돌이면 20~27, 평상시면 0~19
     gravity = 1;
     bar_w = 498;
-    bar_startY = PLAYER_FIRSTY + 100;
+    bar_startY = (STAGE2_HEIGHT - (CLOUD_HEIGHT + 50)) + 100;
     fall = true;
 
-    player = { MEM_WIDTH/2, PLAYER_FIRSTY, 1, 0 };      //플레이어 시작위치
+    player = { MEM_WIDTH / 2, (STAGE2_HEIGHT - (CLOUD_HEIGHT + 50)), 1, 0 };      //플레이어 시작위치
 }
 
-void gameScene::drawPlayer(HDC hdc) {
+void stage2Scene::drawPlayer(HDC hdc) {
     //플레이어 그리는 함수
     player_image.Draw(hdc, player.px, player.py, PLAYER_WIDTH, PLAYER_HEIGHT, animation[ani_index].left, animation[ani_index].top,
         PLAYER_IMAGE_SIZE, PLAYER_IMAGE_SIZE);
 }
-void gameScene::drawBackGround(HDC hdc) {
+void stage2Scene::drawBackGround(HDC hdc) {
     //배경 그리는 함수
     background.BitBlt(hdc, 0, 0, SRCCOPY);
 }
-void gameScene::drawCloud(HDC hdc) {
+void stage2Scene::drawCloud(HDC hdc) {
     //구름 그리는 함수
     for (int j = 0; j < cloud_index; ++j) {
         switch (cloud[j].what) {
@@ -165,7 +165,7 @@ void gameScene::drawCloud(HDC hdc) {
         }
     }
 }
-void gameScene::drawItems(HDC hdc) {
+void stage2Scene::drawItems(HDC hdc) {
     for (int j = 0; j < item_index; ++j) {
         switch (item[j].what) {
         case 1:
@@ -177,7 +177,7 @@ void gameScene::drawItems(HDC hdc) {
         }
     }
 }
-void gameScene::drawHPBar(HDC hdc) {
+void stage2Scene::drawHPBar(HDC hdc) {
     HBRUSH myBrush = (HBRUSH)CreateSolidBrush(RGB(150, 50, 0));
     HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
     Rectangle(hdc, 50, bar_startY + 1, bar_w + 50, bar_startY + 29);
@@ -187,22 +187,22 @@ void gameScene::drawHPBar(HDC hdc) {
     myBrush = (HBRUSH)GetStockObject(NULL_BRUSH);
     oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
     HPEN hPen = CreatePen(PS_DOT, 2, RGB(0, 0, 0));
-    HPEN oldPen = (HPEN)SelectObject(hdc, hPen); 
+    HPEN oldPen = (HPEN)SelectObject(hdc, hPen);
     Rectangle(hdc, 50, bar_startY, HPBAR_WIDTH + 50, bar_startY + 30);
     SelectObject(hdc, oldBrush);
     DeleteObject(myBrush);
     SelectObject(hdc, oldPen);
     DeleteObject(hPen);
 }
-void gameScene::drawBox(HDC hdc) {
+void stage2Scene::drawBox(HDC hdc) {
     Rectangle(hdc, pRECT.left, pRECT.top, pRECT.right, pRECT.bottom);
     for (int i = 0; i < cloud_index; ++i) {
-        Rectangle(hdc, cloud[i].cx +30, cloud[i].cy+30, cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + CLOUD_COLLIDE_HEIGHT);
+        Rectangle(hdc, cloud[i].cx + 30, cloud[i].cy + 30, cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + CLOUD_COLLIDE_HEIGHT);
     }
-    
+
 }
 
-void gameScene::moveItem() {
+void stage2Scene::moveItem() {
     for (int i = 0; i < item_index; ++i) {
         if (item[i].get == 1) {
             item[i].iy = bar_startY;
@@ -210,7 +210,7 @@ void gameScene::moveItem() {
     }
 }
 
-void gameScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
+void stage2Scene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
     switch (iMessage)
     {
@@ -219,7 +219,7 @@ void gameScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 
     }
     break;
-    case WM_KEYUP: 
+    case WM_KEYUP:
     {
         if (wParam == VK_UP) {
             fall = true;
@@ -234,7 +234,7 @@ void gameScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
     }
 }
 
-bool gameScene::getItemCheck() {
+bool stage2Scene::getItemCheck() {
     for (int i = 0; i < item_index; ++i) {
         if (item[i].get == 0)
             return false;
@@ -243,7 +243,7 @@ bool gameScene::getItemCheck() {
 }
 
 //애니메이션 있으면 여기서 업데이트
-void gameScene::Update(const float frameTime)
+void stage2Scene::Update(const float frameTime)
 {
 
     if (player.status) {          //충돌이 아닐 때
@@ -252,7 +252,7 @@ void gameScene::Update(const float frameTime)
     if (ani_index >= 39)
         ani_index = 0;
 
-    pRECT = { player.px+18,player.py + 10,player.px+18 + PLAYER_COLLIDE_WIDTH ,player.py + PLAYER_HEIGHT};
+    pRECT = { player.px + 18,player.py + 10,player.px + 18 + PLAYER_COLLIDE_WIDTH ,player.py + PLAYER_HEIGHT };
 
     player.status = 1;
 
@@ -260,13 +260,13 @@ void gameScene::Update(const float frameTime)
         cloud[i].index++;
         if (cloud[i].index == 74)
             cloud[i].index = 0;
-        cRECT = { cloud[i].cx+30, cloud[i].cy+30, cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + CLOUD_COLLIDE_HEIGHT };
+        cRECT = { cloud[i].cx + 30, cloud[i].cy + 30, cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + CLOUD_COLLIDE_HEIGHT };
         if (IntersectRect(&tmp, &cRECT, &pRECT) && i > 6) {                             //충돌 검사
             player.status = 0;
             ani_index = 50;
         }
-        if (cloud[i].what != 3 && cloud[i].index >=35 && cloud[i].index <= 59 ) {       //번개나 비 충돌 검사
-            cRECT = { cloud[i].cx+30, cloud[i].cy + (CLOUD_HEIGHT - 30),              //비 범위
+        if (cloud[i].what != 3 && cloud[i].index >= 35 && cloud[i].index <= 59) {       //번개나 비 충돌 검사
+            cRECT = { cloud[i].cx + 30, cloud[i].cy + (CLOUD_HEIGHT - 30),              //비 범위
                 cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + (CLOUD_HEIGHT - 30) + CLOUD_HEIGHT };
             if (IntersectRect(&tmp, &cRECT, &pRECT)) {                             //충돌 검사
                 player.status = 0;
@@ -309,15 +309,15 @@ void gameScene::Update(const float frameTime)
     if (fall && gravity >= -30)
         gravity -= frameTime * 12;
 
-    if (fall && player.py <= PLAYER_FIRSTY) {
-        if(!player.status)
-            player.py -= gravity/3;
+    if (fall && player.py <= (STAGE2_HEIGHT - (CLOUD_HEIGHT + 50))) {
+        if (!player.status)
+            player.py -= gravity / 3;
         else
             player.py -= gravity;
-        if (startY <= MEM_HEIGHT - (FRAME_HEIGHT) && player.py >= PLAYERMOVE_START) {
+        if (startY <= STAGE2_HEIGHT - (FRAME_HEIGHT) && player.py >= PLAYERMOVE_START) {
             if (!player.status) {
-                startY -= gravity/3;
-                bar_startY -= gravity/3;
+                startY -= gravity / 3;
+                bar_startY -= gravity / 3;
                 moveItem();
             }
             else {
@@ -330,7 +330,7 @@ void gameScene::Update(const float frameTime)
 
     if ((GetAsyncKeyState(VK_LEFT) & 0x8000) && (GetAsyncKeyState(VK_UP) & 0x8001)) {
         fall = false;
-        if (player.py <= PLAYERMOVE_START || player.py >= PLAYERMOVE_STOP) {
+        if (player.py <= PLAYERMOVE_START || player.py >= (STAGE2_HEIGHT - (FRAME_HEIGHT / 2))) {
             if (!player.status) {
                 player.py -= 2;
                 player.px -= 2;
@@ -367,7 +367,7 @@ void gameScene::Update(const float frameTime)
     }
     if ((GetAsyncKeyState(VK_RIGHT) & 0x8000) && (GetAsyncKeyState(VK_UP) & 0x8001)) {
         fall = false;
-        if (player.py <= PLAYERMOVE_START || player.py >= PLAYERMOVE_STOP) {
+        if (player.py <= PLAYERMOVE_START || player.py >= (STAGE2_HEIGHT - (FRAME_HEIGHT / 2))) {
             if (!player.status) {
                 player.py -= 2;
                 player.px += 2;
@@ -404,8 +404,8 @@ void gameScene::Update(const float frameTime)
     }
     if ((GetAsyncKeyState(VK_UP) & 0x8001)) {
         fall = false;
-        if (player.py <= PLAYERMOVE_START || player.py >= PLAYERMOVE_STOP) {
-            if(!player.status)
+        if (player.py <= PLAYERMOVE_START || player.py >= (STAGE2_HEIGHT - (FRAME_HEIGHT / 2))) {
+            if (!player.status)
                 player.py -= 2;
             else
                 player.py -= 7;
@@ -447,7 +447,7 @@ void gameScene::Update(const float frameTime)
             player.px -= 5;
     }
 }
-void gameScene::Render(HDC hdc)
+void stage2Scene::Render(HDC hdc)
 {
     drawBackGround(hdc);
     //drawBox(hdc);

@@ -26,9 +26,9 @@ void clearScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 		case VK_RETURN:
 			PlaySound(NULL, NULL, NULL);
 			scene* scene = framework.curScene;
-			framework.curScene = new gameScene;
+			framework.curScene = new stage2Scene;
 			framework.curScene->init();
-			framework.nowscene = GAME;
+			framework.nowscene = STAGE2;
 			delete scene;
 			break;
 		}

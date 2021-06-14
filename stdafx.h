@@ -32,6 +32,7 @@ using namespace std::chrono;
 #include "scene.h"
 #include "menuScene.h"
 #include "gameScene.h"
+#include "stage2Scene.h"
 #include "overScene.h"
 #include "clearScene.h"
 
