@@ -13,10 +13,10 @@ void menuScene::init()
     //메뉴 화면에서 그릴 리소스 위치 초기화
     background.Load(TEXT("image/시작화면1.png"));
     normalCloud.Load(TEXT("image/일반구름.png"));
-    rainCloud.Load(TEXT("image/비구름.png"));
+    rainCloud.Load(TEXT("image/비구름1.png"));
     darkCloud.Load(TEXT("image/먹구름.png"));
     press.Load(TEXT("image/시작하려면누르세요.png"));
-    PlaySound(TEXT("sound/level1-step1.wav"), NULL, SND_ASYNC | SND_LOOP);
+    PlaySound(TEXT("sound/level1.wav"), NULL, SND_ASYNC | SND_LOOP);
     cloudSizeCount = 0;
     cloudSize = 300;
     rainCloudSize = 230;
@@ -80,7 +80,7 @@ void menuScene::Render(HDC hdc)
     background.Draw(hdc, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, 0, 0, background.GetWidth(), background.GetHeight());
     normalCloud.Draw(hdc, 60, 400, cloudSize, cloudSize, 512 * ren, 0, normalCloud.GetHeight(), normalCloud.GetHeight());
     press.Draw(hdc, 390, 550, 430, 45, 0, 0, press.GetWidth(), press.GetHeight());
-    rainCloud.Draw(hdc, 900, 300, rainCloudSize, rainCloudSize - 30, 512 * ren, 0, CLOUD_IMAGE_SIZE, rainCloud.GetHeight());
+    rainCloud.Draw(hdc, 870, 300, 300, 350, 512 * ren, 0, CLOUD_IMAGE_SIZE, rainCloud.GetHeight());
     darkCloud.Draw(hdc, 500, 0, darkCloudSize, darkCloudSize, 512 * ren, 0, darkCloud.GetHeight(), darkCloud.GetHeight());
     //--- 메모리 DC에 배경 그리기
 }

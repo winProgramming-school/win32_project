@@ -1,6 +1,6 @@
 #pragma once
 
-enum SCENE{MENU, GAME};
+enum SCENE{MENU, GAME, STAGE2};
 
 class WGameFramework
 {

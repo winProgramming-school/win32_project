@@ -3,7 +3,8 @@
 
 class clearScene : public scene {
 public:
-
+	CImage back, txtmotion;
+	int size;
 public:
 	virtual ~clearScene() override;
 

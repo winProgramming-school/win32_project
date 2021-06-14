@@ -12,6 +12,7 @@ typedef struct Cloud {
 	int what;			//1: 먹구름 2: 비구름 3: 일반구름
 	int index;
 }Cloud;
+
 typedef struct Item {
 	int ix, iy;
 	int what;			//1: 하트 2: 돌
@@ -20,7 +21,7 @@ typedef struct Item {
 
 class gameScene : public scene {
 public:
-	RECT animation[28];	//평상시 애니메이션(리소스 위치)
+	RECT animation[56];	//평상시 애니메이션(리소스 위치)
 	RECT cloud_ani[75];
 	RECT rain_ani[35];
 
@@ -29,6 +30,9 @@ public:
 	int item_index;		//하트랑 스톤 개수
 	int bar_startY;
 	float bar_w;
+
+	int player_movestop;
+	int player_startY;
 
 	float gravity;
 	bool fall;			//떨어지는 상태
@@ -66,4 +70,6 @@ public:
 	void InitHeart();
 
 	void moveItem();
+	bool getItemCheck();
+
 };

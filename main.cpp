@@ -142,6 +142,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	HDC mainHDC;
 	HDC memdc;		//menuDC
 	HDC gamedc;
+	HDC game2dc;
 
 	switch (message)
 	{
@@ -164,13 +165,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			BitBlt(mainHDC, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, memdc, 0, 0, SRCCOPY);
 			DeleteDC(memdc);
 		}
-		else {
+		else if(framework.nowscene == GAME){
 			hBitmap = CreateCompatibleBitmap(mainHDC, MEM_WIDTH, MEM_HEIGHT);		//gamescene일땐 memdc가 길어야 함
 			gamedc = CreateCompatibleDC(mainHDC);
 			SelectObject(gamedc, hBitmap);
 			framework.OnDraw(gamedc);
 			StretchBlt(mainHDC, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, gamedc, framework.curScene->startX, framework.curScene->startY, FRAME_WIDTH, FRAME_HEIGHT, SRCCOPY);
 			DeleteDC(gamedc);
+		}
+		else {
+			hBitmap = CreateCompatibleBitmap(mainHDC, MEM_WIDTH, STAGE2_HEIGHT);		//gamescene일땐 memdc가 길어야 함
+			game2dc = CreateCompatibleDC(mainHDC);
+			SelectObject(game2dc, hBitmap);
+			framework.OnDraw(game2dc);
+			StretchBlt(mainHDC, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, game2dc, framework.curScene->startX, framework.curScene->startY, FRAME_WIDTH, FRAME_HEIGHT, SRCCOPY);
+			DeleteDC(game2dc);
 		}
 
 		DeleteObject(hBitmap);
@@ -182,7 +191,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		switch (wParam) {
 		case 1:
-			if (framework.nowscene == GAME) {
+			if (framework.nowscene == GAME || framework.nowscene == STAGE2) {
 				framework.curFrameTime = clock();
 				framework.OnUpdate(framework.GetTick());
 				framework.prevFrameTime = framework.curFrameTime;
