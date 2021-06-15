@@ -120,6 +120,7 @@ void stage2Scene::init()
     rainCloud.Load(TEXT("image/비구름.png"));
     rain.Load(TEXT("image/비.png"));
     darkCloud.Load(TEXT("image/먹구름.png"));
+    lightning.Load(TEXT("image/번개.png"));
 
     heart.Load(TEXT("image/heart.png"));
     stone.Load(TEXT("image/stone.png"));
@@ -132,6 +133,10 @@ void stage2Scene::init()
     bar_w = 498;
     bar_startY = (STAGE2_HEIGHT - (CLOUD_HEIGHT + 50)) + 100;
     fall = true;
+
+    shock = false;
+    shocktimer = 0;
+
     status = RUN;
 
     player = { MEM_WIDTH / 2, (STAGE2_HEIGHT - (CLOUD_HEIGHT + 50)), 1, 0 };      //플레이어 시작위치
@@ -151,7 +156,12 @@ void stage2Scene::drawCloud(HDC hdc) {
     for (int j = 0; j < cloud_index; ++j) {
         switch (cloud[j].what) {
         case 1:
-            darkCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT, cloud_ani[cloud[j].index].left, cloud_ani[cloud[j].index].top, CLOUD_IMAGE_SIZE, CLOUD_IMAGE_SIZE);
+            if (cloud[j].index >= 25 && cloud[j].index <= 59) {
+                darkCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT - 30, cloud_ani[cloud[j].index].left, cloud_ani[cloud[j].index].top, CLOUD_IMAGE_SIZE, RAINCLOUD_IMAGE + 45);
+                lightning.Draw(hdc, cloud[j].cx, cloud[j].cy + (CLOUD_HEIGHT - 30), CLOUD_WIDTH, CLOUD_HEIGHT, rain_ani[cloud[j].index - 25].left, rain_ani[cloud[j].index - 25].top, CLOUD_IMAGE_SIZE, RAIN_IMAGE);
+            }
+            else
+                darkCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT-30, cloud_ani[cloud[j].index].left, cloud_ani[cloud[j].index].top, CLOUD_IMAGE_SIZE, RAINCLOUD_IMAGE + 45);
             break;
         case 2:
             if (cloud[j].index >= 25 && cloud[j].index <= 59) {
@@ -182,7 +192,7 @@ void stage2Scene::drawItems(HDC hdc) {
 void stage2Scene::drawHPBar(HDC hdc) {
     HBRUSH myBrush = (HBRUSH)CreateSolidBrush(RGB(150, 50, 0));
     HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
-    Rectangle(hdc, 50, bar_startY + 1, bar_w + 50, bar_startY + 29);
+    Rectangle(hdc, 50, bar_startY + 1, bar_w, bar_startY + 29);
     SelectObject(hdc, oldBrush);
     DeleteObject(myBrush);
 
@@ -190,7 +200,7 @@ void stage2Scene::drawHPBar(HDC hdc) {
     oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
     HPEN hPen = CreatePen(PS_DOT, 2, RGB(0, 0, 0));
     HPEN oldPen = (HPEN)SelectObject(hdc, hPen);
-    Rectangle(hdc, 50, bar_startY, HPBAR_WIDTH + 50, bar_startY + 30);
+    Rectangle(hdc, 50, bar_startY, HPBAR_WIDTH, bar_startY + 30);
     SelectObject(hdc, oldBrush);
     DeleteObject(myBrush);
     SelectObject(hdc, oldPen);
@@ -253,7 +263,13 @@ bool stage2Scene::getItemCheck() {
 //애니메이션 있으면 여기서 업데이트
 void stage2Scene::Update(const float frameTime)
 {
-    if (status == PAUSE)
+    if (shock)
+        shocktimer++;
+    if (shocktimer >= 20) {
+        shocktimer = 0;
+        shock = FALSE;
+    }
+    if (status == PAUSE)          //일시정지
         return;
 
     if (player.status) {          //충돌이 아닐 때
@@ -261,6 +277,7 @@ void stage2Scene::Update(const float frameTime)
     }
     if (ani_index >= 39)
         ani_index = 0;
+
 
     pRECT = { player.px + 18,player.py + 10,player.px + 18 + PLAYER_COLLIDE_WIDTH ,player.py + PLAYER_HEIGHT };
 
@@ -278,26 +295,34 @@ void stage2Scene::Update(const float frameTime)
         if (cloud[i].what != 3 && cloud[i].index >= 35 && cloud[i].index <= 59) {       //번개나 비 충돌 검사
             cRECT = { cloud[i].cx + 30, cloud[i].cy + (CLOUD_HEIGHT - 30),              //비 범위
                 cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + (CLOUD_HEIGHT - 30) + CLOUD_HEIGHT };
-            if (IntersectRect(&tmp, &cRECT, &pRECT)) {                             //충돌 검사
+            if (IntersectRect(&tmp, &cRECT, &pRECT)) {                                  //충돌 검사
                 player.status = 0;
                 ani_index = 50;
+                if (cloud[i].what == 1) {
+                    shock = TRUE;
+                    shocktimer = 0;
+                }
             }
         }
+    }
+
+    if (bar_w <= 50) {
+        scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
+        framework.curScene = new overScene;
+        framework.curScene->init();
+        framework.nowscene = GAME;
+        delete scene;
+        return;
     }
 
     if (!player.status) {           //플레이어가 충돌상태이면 체력 감소
         bar_w -= 40 * frameTime;
     }
-    bar_w -= 0.5 * frameTime;       //항상 감소
 
-    if (bar_w <= 0) {
-        scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
-        framework.curScene = new overScene;
-        framework.curScene->init();
-        framework.nowscene = MENU;
-        delete scene;
+    if (shock)
         return;
-    }
+
+    bar_w -= 0.5 * frameTime;       //항상 감소
 
     for (int i = 0; i < item_index; ++i) {                                  //플레이어가 아이템 먹었는지 검사
         cRECT = { item[i].ix, item[i].iy, item[i].ix + ITEM_SIZE, item[i].iy + ITEM_SIZE };
@@ -305,6 +330,8 @@ void stage2Scene::Update(const float frameTime)
             item[i].ix = ITEM_START + i * 40;
             item[i].iy = bar_startY;
             item[i].get = 1;
+            if (item[i].what == 1)
+                bar_w = (bar_w + 50 >= 498) ? 498 : bar_w + 30;
         }
     }
 

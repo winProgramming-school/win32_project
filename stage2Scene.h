@@ -19,13 +19,16 @@ public:
 
 	float gravity;
 	bool fall;			//떨어지는 상태
+	bool shock;
+	int shocktimer;
+
 	RECT cRECT;			//구름 사각형
 	RECT pRECT;			//플레이어 사각형
 	RECT tmp;			//충돌 검사할 사각형
 
 	CImage player_image, background;
 	CImage heart, stone;
-	CImage normalCloud, rainCloud, darkCloud, rain;
+	CImage normalCloud, rainCloud, darkCloud, rain, lightning;
 
 	Player player;
 	Cloud cloud[200];

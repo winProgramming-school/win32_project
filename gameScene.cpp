@@ -284,7 +284,7 @@ void gameScene::Update(const float frameTime)
         scene* scene = framework.curScene;   ////ÇöÀç ¾ÀÀ» tmp¿¡ ³Ö°í Áö¿öÁÜ
         framework.curScene = new overScene;
         framework.curScene->init();
-        framework.nowscene = MENU;
+        framework.nowscene = GAME;
         delete scene;
         return;
     }
@@ -339,13 +339,7 @@ void gameScene::Update(const float frameTime)
                 player.py -= 7;
                 player.px -= 7;
             }
-            if (player.py <= 0 && getItemCheck()) {
-                scene* scene = framework.curScene;   ////ÇöÀç ¾ÀÀ» tmp¿¡ ³Ö°í Áö¿öÁÜ
-                framework.curScene = new clearScene;
-                framework.curScene->init();
-                framework.nowscene = MENU;
-                delete scene;
-            }
+
         }
         else {
             if (!player.status) {
@@ -376,13 +370,7 @@ void gameScene::Update(const float frameTime)
                 player.py -= 7;
                 player.px += 7;
             }
-            if (player.py <= 0 && getItemCheck()) {
-                scene* scene = framework.curScene;   ////ÇöÀç ¾ÀÀ» tmp¿¡ ³Ö°í Áö¿öÁÜ
-                framework.curScene = new clearScene;
-                framework.curScene->init();
-                framework.nowscene = MENU;
-                delete scene;
-            }
+
         }
         else {
             if (!player.status) {
@@ -409,14 +397,6 @@ void gameScene::Update(const float frameTime)
                 player.py -= 2;
             else
                 player.py -= 7;
-
-            if (player.py <= 0 && getItemCheck()) {
-                scene* scene = framework.curScene;   ////ÇöÀç ¾ÀÀ» tmp¿¡ ³Ö°í Áö¿öÁÜ
-                framework.curScene = new clearScene;
-                framework.curScene->init();
-                framework.nowscene = MENU;
-                delete scene;
-            }
         }
         else {
             if (!player.status) {
@@ -445,6 +425,13 @@ void gameScene::Update(const float frameTime)
             player.px -= 2;
         else
             player.px -= 5;
+    }
+    if (player.py <= 0 && getItemCheck()) {
+        scene* scene = framework.curScene;   ////ÇöÀç ¾ÀÀ» tmp¿¡ ³Ö°í Áö¿öÁÜ
+        framework.curScene = new clearScene;
+        framework.curScene->init();
+        framework.nowscene = MENU;
+        delete scene;
     }
 }
 void gameScene::Render(HDC hdc)

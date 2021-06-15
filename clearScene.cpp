@@ -35,7 +35,6 @@ void clearScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 
 	}
 	break;
-
 	}
 }
 
